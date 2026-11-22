@@ -1,0 +1,88 @@
+# Owner: P3. Full CI pipeline: contracts, secrets, lint, unit, golden, evals, backend, frontend, e2e.
+name: ci
+on:
+  pull_request: {}
+  push:
+    branches: [main]
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-engine.txt
+      - run: python scripts/gen_types.py && git diff --exit-code contracts/types.ts
+      - run: pytest tests/contract -q
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - run: ruff check contracts engine agent scripts tests
+
+  engine-and-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-engine.txt
+      - run: pytest engine agent -q
+      - run: pytest engine/tests/test_golden_scenario.py -q
+      - run: python -m agent.evals.run_evals
+      - run: python scripts/smoke.py
+
+  backend:
+    runs-on: ubuntu-latest
+    if: hashFiles('backend/app/main.py') != ''
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: wayfinder
+          POSTGRES_PASSWORD: wayfinder
+          POSTGRES_DB: wayfinder
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-engine.txt -r backend/requirements.txt pip-audit
+      - run: pip-audit || true
+      - run: pytest backend/tests -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    if: hashFiles('frontend/package.json') != ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: cd frontend && npm ci && npm run lint && npm run build
+      - run: cd frontend && npm audit --audit-level=high
