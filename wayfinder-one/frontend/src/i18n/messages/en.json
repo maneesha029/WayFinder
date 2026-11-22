@@ -1,0 +1,89 @@
+{
+  "app": {
+    "name": "Wayfinder One",
+    "tagline": "The travel agent that doesn't stop working after you book",
+    "home": "WAYFINDER ONE home"
+  },
+  "nav": {
+    "switchTrip": "Switch trip",
+    "advisor": "Advisor console",
+    "settings": "Notification settings",
+    "signOut": "Sign out",
+    "health": "Trip health {score}"
+  },
+  "footer": {
+    "contract": "contract v{version}",
+    "mode": "{mode} mode",
+    "mapAttribution": "© OpenStreetMap contributors (map data)",
+    "simulatedPrices": "Prices and flights are simulated and fictional."
+  },
+  "offline": {
+    "banner": "You are offline. Cached itineraries and the offline pack are available; booking and switching need a connection."
+  },
+  "login": {
+    "signin": "Sign in",
+    "register": "Register",
+    "name": "Your name",
+    "email": "Email",
+    "password": "Password",
+    "traveller": "Traveller",
+    "advisor": "Travel advisor",
+    "submit": "Sign in",
+    "registerSubmit": "Create account",
+    "badCredentials": "Email or password is incorrect.",
+    "nameRequired": "Name is required.",
+    "emailInvalid": "That doesn't look like an email address.",
+    "passwordHint": "Use at least 8 characters.",
+    "demoAccounts": "Demo accounts",
+    "sessionNote": "Your session lives in this tab only. No payments, no real tickets — this is a prototype."
+  },
+  "trips": {
+    "title": "Your trips",
+    "subtitle": "The Guardian watches every booked trip — even while you sleep.",
+    "newTrip": "Plan a new trip",
+    "noTrips": "No trips yet",
+    "noTripsBody": "Start with one line in the planner — destination, dates, budget. You'll get two proof-carrying plans back.",
+    "openPlanner": "Open the planner →",
+    "openCockpit": "Open cockpit",
+    "group": "Group",
+    "starts": "starts {date}",
+    "datesTbd": "dates to be decided"
+  },
+  "chat": {
+    "title": "Plan a journey",
+    "subtitle": "Tell me the vibe, dates and budget — I'll prove the plan before anything is booked.",
+    "inputLabel": "Message the travel agent",
+    "placeholder": "e.g. Plan a 5-day budget trip from Bengaluru for 2 in early December…",
+    "placeholderPlanned": "Ask about bookings, vouchers, changes…",
+    "send": "Send message",
+    "dictate": "Dictate a message",
+    "stopDictate": "Stop dictation",
+    "thinking": "Thinking…",
+    "counter": "{count}/2000 — trim it down"
+  },
+  "itinerary": {
+    "title": "The plan, with proof",
+    "planA": "Plan A",
+    "planB": "Plan B",
+    "compare": "Compare",
+    "reviewBook": "Review & book",
+    "day": "Day {n}",
+    "emptyTitle": "Your itinerary appears here",
+    "verified": "Verified by solver, not guessed"
+  },
+  "settings": {
+    "title": "Notifications & language",
+    "subtitle": "You decide what interrupts you. CRITICAL always breaks through quiet hours.",
+    "save": "Save preferences"
+  },
+  "dev": {
+    "states": "Component states"
+  },
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "dismiss": "Dismiss",
+    "loading": "Loading…"
+  }
+}

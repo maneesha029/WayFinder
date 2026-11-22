@@ -1,0 +1,74 @@
+/*
+ * WAYFINDER ONE design tokens (A5).
+ * Warm paper + instrument-panel teal. One elevation, 4-pt spacing, tabular numerals.
+ * Derived tokens (tints, gradients) stay inside the same palette — nothing neon.
+ */
+:root {
+  /* surfaces & text */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f1f3f6;
+  --ink: #14181f;
+  --ink-2: #4a5160;
+  --ink-3: #61697a;
+  --line: #dde1e7;
+
+  /* brand */
+  --brand: #1d4ed8;
+  --brand-strong: #1e40af;
+  --brand-ink: #ffffff;
+  --brand-soft: #e3ecfd;
+
+  /* status */
+  --green: #157a55;
+  --green-bg: #e3f4ec;
+  --amber: #8a5a00;
+  --amber-bg: #fff1cc;
+  --red: #b3261e;
+  --red-bg: #fde7e5;
+
+  /* simulated badge */
+  --sim: #5b4bb7;
+  --sim-bg: #ece9fa;
+
+  /* item-type accents (4px left bar on ItemCard) */
+  --accent-flight: #2f5d9e;
+  --accent-transfer: #7a6a3a;
+  --accent-hotel: #8a4f7d;
+  --accent-activity: #157a55;
+
+  /* shape */
+  --radius-card: 12px;
+  --radius-inset: 8px;
+  --radius-chip: 999px;
+
+  /* elevation — the only shadow in the product */
+  --shadow-card: 0 1px 2px rgba(20, 24, 31, 0.06), 0 6px 20px rgba(20, 24, 31, 0.05);
+  --shadow-pop: 0 4px 12px rgba(20, 24, 31, 0.1), 0 16px 40px rgba(20, 24, 31, 0.14);
+
+  /* gradients (derived from the palette above) */
+  --grad-paper: linear-gradient(165deg, #ffffff 0%, #f3f5f8 52%, #ffffff 100%);
+  --grad-brand: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  --grad-brand-soft: linear-gradient(135deg, rgba(29, 78, 216, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  --grad-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.74) 100%);
+  --grad-demo: linear-gradient(180deg, #171c24 0%, #10141b 100%);
+  --grad-amber-wash: linear-gradient(180deg, #fff1cc 0%, rgba(255, 241, 204, 0.55) 100%);
+  --grad-green-wash: linear-gradient(180deg, #e3f4ec 0%, rgba(227, 244, 236, 0.5) 100%);
+  --grad-red-wash: linear-gradient(180deg, #fde7e5 0%, rgba(253, 231, 229, 0.5) 100%);
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-med: 200ms;
+  --dur-slow: 400ms;
+
+  /* focus */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--brand);
+}
+
+@media (prefers-color-scheme: dark) {
+  /* dark theme stays optional; tokens unchanged — the product ships light-first */
+  :root {
+    color-scheme: light;
+  }
+}

@@ -1,0 +1,167 @@
+@import '../styles/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-ink;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* single focus convention everywhere: 2px brand ring, 2px offset (A5) */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 4px;
+  }
+
+  ::placeholder {
+    color: var(--ink-3);
+    opacity: 0.85;
+  }
+
+  /* money & time always align (A5) */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: rgba(29, 78, 216, 0.15);
+  }
+
+  /* slim scrollbars inside scroll containers */
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  .scroll-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 999px;
+  }
+  .scroll-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  /* the page-wash used on hero / empty states */
+  .bg-paper-wash {
+    background: var(--grad-paper);
+  }
+
+  /* brand gradient (CTAs, voucher header) */
+  .bg-grad-brand {
+    background: var(--grad-brand);
+  }
+
+  .bg-grad-demo {
+    background: var(--grad-demo);
+  }
+
+  .bg-grad-brand-soft {
+    background: var(--grad-brand-soft);
+  }
+
+  /* frosted top bars */
+  .glass {
+    background: var(--grad-glass);
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* one keyframe set; prefers-reduced-motion disables all motion (A5) */
+  .anim-alert-in {
+    animation: wf-alert-in 200ms var(--ease-out) 1 both;
+  }
+  .anim-pop-in {
+    animation: wf-pop-in 150ms var(--ease-out) 1 both;
+  }
+  .anim-drawer-in {
+    animation: wf-drawer-in 150ms var(--ease-out) 1 both;
+  }
+  .anim-slide-right-in {
+    animation: wf-slide-right-in 150ms var(--ease-out) 1 both;
+  }
+}
+
+@keyframes wf-alert-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes wf-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes wf-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes wf-slide-right-in {
+  from {
+    transform: translateX(24px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Evidence print page (A6.7): clean paper, no chrome */
+@media print {
+  .print-hidden {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .print-page {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
