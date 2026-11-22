@@ -1,0 +1,1415 @@
+# WAYFINDER ONE — Person 1: Frontend & UX
+**VoyageHack 4.0 · TBO · Problem Statement 3: Virtual Travel Agent / Travel Agent Copilot**
+**Your role: Person 1, Frontend and User Experience (Next.js PWA)**
+
+> **How to use this file.** Part A is *your* work packet. Part B is the shared reference and is **identical in all three team files** (feature catalogue, contracts, file ownership, phases, merge rules, acceptance checklist). If Part B ever differs between files, the copy in `main` (`docs/` + `contracts/`) wins; ask P3.
+> **Read first:** A1–A3 (goal, files, phase tasks), A5 (design direction), A6/A6b (screens), then B6 (contracts) and B9 (merge rules).
+> **Status:** this is a plan plus a starter repo (`wayfinder-one/`: folder structure, `docker-compose`, `Makefile`, the contract models with generated TypeScript types, one validated golden fixture, and a contract test). Those pieces were import-checked, type-checked and run. Nothing else has been built; every other acceptance check is a *planned check* until someone runs it and ticks it in B11.
+
+## Team at a glance
+| | Person 1 | Person 2 | Person 3 |
+|---|---|---|---|
+| **Role** | Frontend and UX (Next.js PWA) | Backend, data, supplier + provider layers, workers, notifications, security | Contracts, solver/engine, agent, integration, CI and delivery |
+| **Owns** | `frontend/` | `backend/`, `docker-compose*.yml`, `deploy/` | `contracts/`, `engine/`, `agent/`, `tests/`, `docs/`, `scripts/`, `.github/`, `README.md`, `Makefile` |
+| **Assigned to** | ____________ | ____________ | ____________ |
+
+> **Why this split differs from the generic template:** WAYFINDER ONE's hard part is the solver, Switch Engine and agent, not CRUD. Putting them with the contract keeper (P3) as *pure libraries* keeps P2's backend a testable orchestrator and lets P3 work with zero dependency on the other two after Phase 0. P2 owns `docker-compose` because it owns the database and workers.
+
+**Phases at a glance (about 6 weeks; keep the order, scale the time):** 0 Foundations → 1 Core slice (chat→plan→book) → 2 Guardian (pulse, slack, real signals) → 3 Twin Plans and recovery (switch, courtesy, time banking, live, evidence) → 4 People and channels (groups, advisor, notifications) → 5 Reach and responsibility (WhatsApp, Hinglish, voice, offline, SOS, green, multi-city) → 6 Hardening and delivery. Every phase ends with a gate (B8/B11). **Everything in the feature catalogue (B2, F1–F22) ships working end to end; nothing is cut.**
+
+**Contents.** Part A (A1 goal · A2 files · A3 tasks by phase · A4 inputs/outputs · specs · dependencies). Part B (B1 assumptions · B2 journeys and feature catalogue · B3 architecture · B4 file tree · B5 golden and secondary scenarios · B6 contracts · B7 connection map · B8 phases and matrices · B9 merge plan · B10 setup · B11 acceptance · B12 risks).
+
+---
+
+# PART A — YOUR WORK PACKET
+
+## A1. Goal and definition of done
+
+**Goal.** Make WAYFINDER ONE feel like a finished, calm, trustworthy product across every feature: planning, the guardian cockpit, the A→B switch, groups, advisors, messaging-adjacent flows, voice, Hindi/Hinglish, offline and safety.
+
+**Done when:** every P1-facing acceptance item passes from the UI (AC-02..06, 07..16, 18, 19, 24..29, 33..37, LCP part of 40); the entire product also runs in `NEXT_PUBLIC_API_MODE=fixtures` (every screen, every state); `/dev/states` shows every component in default / loading / empty / error; axe reports no serious issues; Lighthouse PWA and accessibility ≥ 90.
+
+**Frontend security rules.** No `dangerouslySetInnerHTML` (drafts, alerts, chat render as text); strict CSP in `next.config.mjs`; access token kept in memory with `sessionStorage` rehydrate (never `localStorage`); the public `/share/[token]` page needs no auth and shows only `SharedTripView`.
+
+## A2. Files you own and files you must not touch
+
+| You own (edit freely) | Do not edit (file a CR, B9) |
+|---|---|
+| everything under `frontend/` incl. `public/`, `src/i18n/*`, service worker config | `contracts/*` (P3) including generated `types.ts` and fixtures |
+| `.env.example` block `# --- P1 ---` only; `.prettierrc`, eslint config | `backend/*` (P2), `engine/*`, `agent/*` (P3) |
+| the `data-testid` names in A6/A6b (stable; P3's e2e depends on them; renames need a CR) | `Makefile`, `README.md`, `docs/*`, `.github/*` (P3) |
+
+Import contracts read-only through `@contracts/*` → `../contracts/*` (`tsconfig.json` `paths` + `next.config.mjs` `experimental.externalDir: true`).
+
+## A3. Tasks by phase (component details are in A5, A6, A6b)
+
+| Phase | Tasks | Output / gate |
+|---|---|---|
+| **0 Foundations** (days 1–3) | Scaffold Next.js 14 + TS + Tailwind + TanStack Query + next-intl; `@contracts` alias; `styles/tokens.css` (A5); fonts; `lib/api/client.ts` (bearer token, error envelope → `ApiError`, 401 → login redirect); `endpoints.ts` covering **every endpoint in B6.3/B6.3b**; `fixtures.ts` serving `contracts/fixtures/*` incl. a fake SSE timer; UI kit (Button, Chip, Badge, SimBadge, Card, Dialog, Drawer, Tabs, Toast, Skeleton, EmptyState, ErrorState, Gauge, Tooltip, Segmented, Switch); login/register + route guard; `/dev/states` | App boots in both modes (AC-01) |
+| **1 Core slice** (week 1) | Plan workspace (`ChatPanel`, `ItineraryPanel`, `ItineraryTimeline`, `ItemCard`, `SlackConnector`, `ProofList`, `PlanCompare`, destination option cards); `BookDialog`, `BookingList`, `VoucherList`, `CancelDialog`, `ModifyDialog` (quote → approve); trips list | AC-02..06, 16 (UI) |
+| **2 Guardian** (week 2) | Cockpit shell + tabs; `HealthMeter`; `GuardianFeed`, `AlertCard`, `WhyThis` (uses `/signals`); `useTripEvents` (SSE with `sse_token`, polling fallback); `/settings` (channels, WhatsApp number, quiet hours, sensitivity, language, push opt-in permission flow) | AC-07, 08, 27 (UI) |
+| **3 Twin Plans and recovery** (week 3) | `SwitchDecisionCard`; `DraftsDrawer`; `PriorityBoard` + `RebalancePreview`; `OptionalityCard`; `LiveMap` + `CommitmentList` + `RerouteOptionCard`; Evidence tab, print page, PDF button; Plan-B freshness badge; `DemoPanel` | AC-09..15, 23..25 (UI) |
+| **4 People and channels** (week 4) | Group tab (create, invite code, join, members, `PreferenceForm`, `ConflictsPanel`, `VotePanel`, `SplitTable`, `RegroupCard`); per-person alerts in the feed; advisor console `/advisor`, `/advisor/[id]` (read-only cockpit, notes, consent banner); invite-advisor dialog; owner-only affordances (members see disabled buttons with explanation) | AC-26, 28, 29 |
+| **5 Reach and responsibility** (week 5) | i18n en/hi with language switch; `VoiceButton`; PWA (manifest, Workbox, `OfflineManager`, offline banner, install prompt); `SafetyPanel` (contacts, safe check-ins, SOS with offline queue and `Idempotency-Key`, share links); public `/share/[token]`; Responsible tab (SVG CO₂ chart, insights, `AlternativeCard` → preview → approve via `swap-item`) | AC-33..37 |
+| **6 Hardening** (week 6) | Axe in Playwright (with P3), keyboard-path audit, responsive polish at 375/768/1280, empty/error audit, bundle/LCP work (lazy-load map and chart), Lighthouse PWA/a11y, final visual QA against A5 | AC-18, 19, 40 |
+
+## A4. Inputs you receive, outputs you deliver
+
+| Receive | From | When |
+|---|---|---|
+| `contracts/types.ts` (generated) and fixtures for **every** endpoint and SSE event, `golden_*.json`, `group_*.json`, `advisor_*.json` | P3 | Phase 0 |
+| Live API on `:8000` matching B6 (stubbed first, then real, phase by phase) | P2 | per phase (B8) |
+| Real SSE events (audience filtering done server-side) | P2 | Phase 2 |
+| Agent-written strings (alerts, drafts) already localised; UI strings are yours | P2/P3 | – |
+
+| Deliver | To | When |
+|---|---|---|
+| Stable `data-testid`s | P3 | before each phase gate |
+| List of missing fields/states you hit (CR) | P3 | immediately |
+| Running UI, screenshots, a 60-second screen recording per phase | team | each gate |
+
+**Contracts you follow:** B6 exactly (snake_case keys, ISO datetimes, `ErrorResponse`, generated types). Never invent fields. **Independent check:** `NEXT_PUBLIC_API_MODE=fixtures npm run dev` and walk every journey with the Demo Panel (the fixtures layer fakes clock/inject by swapping fixture files and firing fixture SSE events).
+
+## A5. UI design direction
+
+**Feel.** A calm, confident travel cockpit: editorial warmth for the trip, instrument-panel precision for risk. Not a chatbot skin, not a default component-library look. The signature element is the **Slack connector**: a thin pill between consecutive items showing the time buffer (`+45 min`), coloured and labelled by health. The whole product is "slack made visible".
+
+**Typography.** Display/headings: *Fraunces* (soft serif, trip titles, big numbers). UI/body: *Inter*. Data, times, IDs, source/freshness lines: *JetBrains Mono* at 12–13px. Scale 12 / 14 / 16 / 20 / 28 / 40; line height 1.5 body, 1.2 headings. Tabular numerals for money and time.
+
+**Tokens (`styles/tokens.css`, CSS variables, light theme first; dark theme optional).**
+
+| Token | Value | Use |
+|---|---|---|
+| `--bg` | `#F6F3EC` | page (warm paper) |
+| `--surface` | `#FFFFFF` | cards |
+| `--surface-2` | `#EFEBE1` | inset panels |
+| `--ink` | `#14181F` | text (contrast 15:1 on bg) |
+| `--ink-2` | `#4A5160` | secondary text (7.5:1) |
+| `--line` | `#DAD4C5` | borders |
+| `--brand` | `#0B6E75` | primary actions, links (5.6:1 on white) |
+| `--brand-ink` | `#FFFFFF` | text on brand |
+| `--green` / `--green-bg` | `#157A55` / `#E3F4EC` | GREEN, CONFIRMED |
+| `--amber` / `--amber-bg` | `#8A5A00` / `#FFF1CC` | AMBER, PENDING (text uses dark amber, fills light) |
+| `--red` / `--red-bg` | `#B3261E` / `#FDE7E5` | RED, FAILED, CRITICAL |
+| `--sim` | `#5B4BB7` on `#ECE9FA` | SIMULATED badge |
+| radius | 12px cards, 999px chips | |
+| shadow | `0 1px 2px rgba(20,24,31,.06), 0 6px 20px rgba(20,24,31,.05)` | one elevation only |
+| spacing | 4-pt grid: 4, 8, 12, 16, 24, 32, 48 | |
+
+Item-type accents (thin 4px left bar): flight `#2F5D9E`, transfer `#7A6A3A`, hotel `#8A4F7D`, activity `#157A55`. Icons: lucide-react, 1.5px stroke.
+
+**Interaction states.** Every interactive element has hover, focus-visible (2px `--brand` ring + 2px offset), active, disabled (opacity .5 + `aria-disabled`), loading (inline spinner, no layout shift). Minimum target 44×44px on touch.
+
+**Motion (only where it clarifies).** 150ms fades for toasts and drawers; the Slack Gauge animates between values (400ms ease-out); a new alert card slides in once (200ms); the A→B switch cross-fades changed items and highlights the diff for 1.2s. Respect `prefers-reduced-motion` (all of the above become instant).
+
+**Navigation and layout.**
+- Top bar: logo mark + "WAYFINDER ONE", trip switcher, health dot, `D` demo hint (when demo mode), contract version in footer.
+- Desktop ≥1100px: Plan workspace is a two-pane split (chat 38% / itinerary 62%). Cockpit: left rail tabs, main column, right column "Guardian" (sticky health meter + latest alerts).
+- Tablet 768–1099: single column, health meter becomes a sticky header strip; right column collapses under tabs.
+- Mobile <768: bottom tab bar (Plan, Trip, Guardian, Live), chat full-screen, switch card as full-height sheet. Timeline items stack; the Slack connector stays inline.
+- Max content width 1280px; no horizontal page scroll at 375px; wide tables scroll inside their own container.
+
+**Accessibility.** Labels on all inputs; errors linked with `aria-describedby`; dialogs trap focus and restore it; `aria-live="polite"` region for new alerts (`assertive` only for CRITICAL); alert level is shown by icon + text label + colour, never colour alone; full keyboard path chat → book → approve switch; `Esc` closes drawers.
+
+## A6. Screens, states and required `data-testid`s
+
+**1. Plan workspace `/`**
+- Left `ChatPanel` (`chat-panel`, input `chat-input`, send `chat-send`, quick replies `quick-reply`, demo chip `try-demo`).
+- Right `ItineraryPanel` (`itinerary-panel`): day-grouped timeline; each `ItemCard` (`item-card-{id}`) shows title, time, place, price with `PriceLine` (`₹4,300 · TBO Sandbox (sim) · checked 2 min ago`, `SimBadge`), tags (Refundable until…, MUST/NICE, risk tags, CO₂ chip), booking chip. Between cards: `SlackConnector` (`slack-{fromId}-{toId}`) → `+45 min` / `+10 min tight` / `−12 min missed`.
+- `PlanCompare` (`plan-compare`): toggle A | B | Compare. Compare view highlights diffs (changed/removed/added) and shows each plan's feasibility %, min slack, total cost.
+- `ProofList` (`proof-list`): the `Validation.checks` as ✓/✗ lines with the solver's `detail` text. Label: "Verified by solver, not guessed".
+- Primary CTA `Review & book` (`book-cta`).
+- **States:** *empty* (headline, 3 example chips, demo chip); *clarifying* (assistant bubble + ≤2 chips); *recommending* (destination option cards; unavailable ones disabled with "Not in prototype inventory"); *loading/planning* (skeleton timeline + progress steps "Understanding → Searching → Solving → Verifying", min 600ms so it feels deliberate, max follows real latency); *planned*; *error* (`ErrorState` with the API `message` + Retry; LLM fallback is invisible to the user).
+- Validation: empty message disables Send; >2000 chars shows counter and blocks.
+
+**2. Book dialog** (`book-dialog`): itemised list, total, refundable summary, checkbox-less single explicit button "Approve and book" (`book-approve`). Generates `idempotency_key = book-{tripId}-{random6+}`, kept in state so retries reuse it. States: submitting, result list with honest per-item chips (PENDING explained: "Waiting for supplier confirmation"), `PRICE_CHANGED` re-confirm view (old→new price per item, "Approve new total"), generic error with retry.
+
+**3. Trip cockpit `/trips/[id]`** tabs: Itinerary, Guardian, Bookings, Live, Evidence, Priorities, Group (group trips), Responsible, Safety and Offline (specs for the last four in A6b).
+- `HealthMeter` (`health-meter`): ring gauge 0–100 with Green/Amber/Red label and the `explanation` line; five horizontal component bars (`time_buffer`, `delay_risk`, `weather_risk`, `crowd_risk`, `budget_headroom`) with tooltips; "Weakest link: {item title}" jumps to that item.
+- `GuardianFeed` (`guardian-feed`): grouped by window (T-72h, T-24h, T-3h, Live). `AlertCard` (`alert-{id}`): level icon+label, title, body, `Provenance` line ("Flight status feed (sim) · checked 2 min ago"), action button from `recommended_action`, dismiss. Escalation ladder legend in a tooltip (Info → Nudge → Action needed → Critical). Only ACTION_NEEDED/CRITICAL toast.
+- *Empty:* "Guardian is watching. Nothing needs you yet." with next scheduled check time.
+
+**4. Switch decision card** (`switch-card`), opens from the alert action or as a banner at top of cockpit:
+- Headline: "Plan A: 62% likely to work. Plan B: 94%." (numbers from the payload, formatted `Math.round(x*100)`).
+- Two columns A and B: feasibility, min slack, cost; row of **Lost** items with priority chips (`switch-lost`), **Kept** bookings (`switch-kept`, e.g. "Flights and hotel stay unchanged"), **Changing** bookings, `+₹1,800` delta.
+- Mode badge FULL / MIXED with one-line explanation ("Afternoon from Plan B, the rest from Plan A").
+- Drafts checklist (the 3 drafts, preselected, "Preview" opens drawer).
+- Buttons: `switch-approve` ("Approve switch"), `switch-keep` ("Keep Plan A"). Never auto-closed. During submit: both disabled, spinner. On failure (`SUPPLIER_UNAVAILABLE`): inline message "Nothing was changed. Plan A is still active." + retry.
+- On success: confetti-free, calm: diff highlight on the timeline + toast "Plan switched. 3 messages sent (simulated)."
+
+**5. Drafts drawer** (`drafts-drawer`): card per draft (`draft-{id}`) with recipient, channel icon, language segmented control (en / Hinglish toggles the `locale` of re-fetched drafts if backend supports; otherwise shows the language field), editable textarea (`draft-body-{id}`), preview bubble styled as WhatsApp, buttons Approve / Edit / Discard. State chips DRAFT → APPROVED → SENT (simulated).
+
+**6. Live tab** (`live-tab`): MapLibre GL map reading the self-hosted PMTiles file (route polyline, user dot, commitment pins) or an SVG fallback; `CommitmentList` with slack chips; `RerouteOptionCard`s (`reroute-{id}`) with mode icon, ETA, slack, cost delta, source; tracking toggle with privacy text ("Location is used only during active travel windows and kept only as your latest point"); simulated-drive slider (`drive-slider`) posting `LocationPing` every 500ms.
+
+**7. Evidence tab and `/trips/[id]/evidence`**: vertical timeline of `EvidenceEvent`s (source icon, timestamp mono), totals (delay minutes, extra cost), three `ClaimSection` cards with "Copy summary" and "Print / Save as PDF" (browser print stylesheet).
+
+**8. Bookings tab**: `BookingList` (status chips, supplier ref mono), `VoucherList`, Cancel button → `CancelDialog`: on open it calls `POST /bookings/{id}/cancel` with `approve=false`, reads the 400 `APPROVAL_REQUIRED` `details` (penalty, refundable, cancel-by) as the quote, then offers an explicit approve that re-calls with `approve=true`.
+
+**9. Demo panel** (`demo-panel`, hotkey `D`): rows `clock-t72`, `clock-t24`, `clock-t3`, `clock-live`; `inject-delay-55`, `inject-delay-120`, `inject-rain`, `inject-bandh`, `inject-traffic-25`; `drive-play`; `demo-reset`; shows current `window` and `sim_now`. It looks like a developer tool (monospace, dark strip) so it is clearly separate from product UI.
+
+**Global states.** Every list has an empty state; every fetch has a skeleton; every mutation has success + error feedback; offline banner if `navigator.onLine` is false. Every simulated datum carries `SimBadge`.
+
+## A6b. Screens added for full scope (states, test ids, behaviour)
+
+**Auth** `/login`: tabs Sign in / Register (`login-form`, `login-email`, `login-password`, `login-submit`, `register-submit`); inline validation (email format, password ≥ 8); generic error "Email or password is incorrect" (never reveal which); throttled state shows retry time. Demo-account hint under the form when `NEXT_PUBLIC_DEMO_MODE=1`.
+
+**Settings** `/settings`: channel toggles (In-app, Push, WhatsApp, Email), WhatsApp number (E.164 validated, "Send test"), quiet hours (time pickers), sensitivity (Low / Normal / High, each with a plain explanation of what it suppresses), language (en / हिन्दी / Hinglish), privacy text, delivery receipts from `notification.sent`. Test ids `settings-channel-{name}`, `settings-quiet-start`, `settings-sensitivity`, `settings-save`.
+
+**Priorities** tab: `PriorityBoard` (`priority-board`), columns Must-do / Nice-to-have / Skip-if-needed; keyboard-accessible reorder (menu + arrow keys, not drag-only); saves via `PUT /priorities`. A "What if I lose 90 minutes?" control opens `RebalancePreview` (`rebalance-preview`): dropped/shortened items and a diff, Apply needs explicit approval.
+
+**Optionality card** (`optionality-card`) on Bookings tab and in the book dialog: per risky leg "Saver ₹X (expected loss ₹Y) vs Flex ₹Z", a recommendation sentence, never auto-selects.
+
+**Group tab** (`group-tab`): invite code with copy, member list (owner badge, per-member location-sharing toggle), `PreferenceForm` for the current user only, `ConflictsPanel` (`conflicts-panel`: each conflicting field, the values per person, how it was resolved), `VotePanel` (`vote-panel`: A/B/Neither, live tally, rule text), `SplitTable` (`split-table`: EQUAL / BY_BUDGET toggle, total row equals plan total), `RegroupCard` (`regroup-card`: meeting point, meet-by, each member's ETA). Non-owners see Book/Approve disabled with "Only the trip owner can do this".
+
+**Advisor** `/advisor` (`advisor-table`): sortable, RED first; columns traveller, trip, health dot + score, next risk, unread alerts, consent badge. `/advisor/[id]`: cockpit in read-only mode, notes panel (`advisor-notes`), banner "Acting requires client consent" when `advisor_consent=false`; with consent, action buttons appear labelled "on behalf of {traveller}".
+
+**Responsible tab** (`responsible-tab`): total CO₂, by-mode bars (SVG, labelled, patterns as well as colour), insight cards by kind, method line, `AlternativeCard` → preview (cost delta, CO₂ delta, anything lost) → explicit approve.
+
+**Safety panel** (`safety-panel`): trusted contacts (add/remove, max 5), safe-arrival check-in scheduler for risky items, large SOS button (`sos-button`) with confirm step; offline shows "Queued, will send when you're back online"; share-link manager (`share-create`, `share-revoke`, expiry picker, copy link).
+
+**Public share page** `/share/[token]`: health badge, next stop, ETA, last place name, "as of" time; nothing else; expired/revoked shows a friendly 404.
+
+**Voice** (`voice-button`): press to dictate, listening state, transcript preview before send; unsupported browsers hide the button with a tooltip; language follows app language (`hi-IN` for Hindi/Hinglish, `en-IN` for English).
+
+**i18n:** all UI strings in `i18n/{en,hi}.json` (keys, no concatenated sentences); Hinglish uses the `hi` UI and sends `locale=hinglish` to the API; numbers/dates via `Intl` (`en-IN`/`hi-IN`).
+
+**PWA/offline:** `manifest.webmanifest` (icons, theme colour from tokens, `display: standalone`); Workbox precaches the app shell, stale-while-revalidate for static, network-first for API with fallback to the downloaded pack for trip GETs; "Download for offline" (`offline-download`) fetches the pack and the single regional PMTiles file into Cache Storage/IndexedDB (the pmtiles library accepts a custom source, so the map reads from the cached file; verify range-read behaviour offline in Phase 5) and shows size and last-sync; offline banner (`offline-banner`) and disabled-with-explanation state for actions that need a network (book, switch); queued SOS and check-in confirmations replay on reconnect.
+
+## A7. Frontend ↔ API wiring (how pieces connect)
+
+- Auth: `useAuth` keeps the token in memory (rehydrated from `sessionStorage`) and attaches `Authorization`; for SSE first call `POST /auth/sse-token`, then open `EventSource(…/events?sse_token=…)` and refresh the token on reconnect. 401 → login; 403 → "You don't have access" page; 429 → toast with retry time.
+- Query keys (`lib/queryKeys.ts`): `['trips']`, `['trip', id]`, `['slack', id]`, `['alerts', id]`, `['switch', id]`, `['drafts', id]`, `['bookings', id]`, `['live', id]`, `['evidence', id]`, `['vouchers', id]`, `['group', id]`, `['votes', id]`, `['split', id]`, `['optionality', id]`, `['responsible', id]`, `['manifest', id]`, `['advisorTrips']`, `['prefs']`.
+- `useTripEvents(id)` opens `EventSource(API_BASE + /trips/{id}/events)`; mapping: `alert.created` → invalidate alerts (+toast), `slack.updated` → set slack data, `switch.proposed` → set switch data + banner, `plan.switched` → invalidate trip/bookings/drafts/evidence, `draft.created` → invalidate drafts, `booking.updated` → invalidate bookings/trip, `sim.clock` → update demo header, `group.updated`/`vote.updated` → invalidate group/votes/split, `safe_checkin.due` → in-app prompt, `notification.sent` → delivery receipt chip in settings. On error → fall back to polling every 5s and show a subtle "reconnecting" dot.
+- Mutations disable their trigger while pending, reuse their idempotency key on retry, and show `ApiError.message` verbatim.
+- Time formatting: `Intl.DateTimeFormat('en-IN', {timeZone:'Asia/Kolkata'})`; money `₹` with `en-IN` grouping; freshness "2 min ago" computed from `checked_at` against `sim_now` when present.
+
+## A8. Dependencies and how to unblock yourself
+
+You depend on P3 for fixtures (Phase 0) and on P2 for live endpoints (per phase). Until an endpoint is live, fixtures mode unblocks you. If an endpoint behaves differently from B6, do not patch around it: post the diff, file a CR, and keep your code on the contract.
+
+
+---
+
+# PART B — SHARED REFERENCE (identical in all three files)
+
+## B1. Assumptions and project definition
+
+**Project.** WAYFINDER ONE: an AI travel agent that plans a trip, proves the plan is feasible, books it with approval, then *guards it after booking* (alerts, Plan B, reroute, courtesy messages, claim evidence), for individuals, groups and travel advisors.
+**Event.** VoyageHack 4.0 (TBO), Problem Statement 3: *Virtual Travel Agent / Travel Agent Copilot*. Required: conversational planning, discovery and comparison, price/availability validation, cost estimates, dynamic refinement, post-booking management (confirmations, vouchers, cancellations, modifications, rebooking, disruptions), and user confirmation before consequential actions. Judged on personalization, intelligent automation, orchestration, reliability, UX.
+
+**Build philosophy: full scope, phase-gated, nothing left as a stub.** There is no 48-hour cut-down. Every feature in B2 ships working end to end. The golden scenario (B5) remains the *demo spine*, but the system also works for other destinations, groups and advisors. Work is organised in phases with exit gates (B8); a phase is not finished until its acceptance items (B11) pass.
+
+**Assumptions (change one → tell the other two).**
+
+| # | Assumption | Why |
+|---|---|---|
+| A1 | Timeline is phase-based, planned as **about 6 weeks** for three people (Phase 0–6 in B8). If you have more or less time, keep the order and scale each phase. | Lots of time, but gates keep integration honest |
+| A2 | Stack from the idea deck: Next.js (TypeScript), FastAPI, LangGraph, Gemini, OR-Tools, PostgreSQL, Redis, **Celery** workers for the Journey Pulse, as pitched. | Already pitched |
+| A3 | Supplier layer is an interface `SupplierAdapter` with `MockTboAdapter` (tests, offline demo) and a **real `TboLiveAdapter`** built against the TBO API documentation/credentials supplied by the organisers. `SUPPLIER=mock \| tbo_live \| hybrid` (hybrid = live search, mock fallback per call). If credentials never arrive, mock stays the default and the live adapter is still implemented and unit-tested against recorded responses. | Real inventory is the strongest proof |
+| A4 | **Real accounts**: email + password, JWT, roles `TRAVELLER` and `ADVISOR`. Demo users are seeded. | Needed for groups, advisor, notifications |
+| A5 | **Signals are hybrid** (`SIGNAL_SOURCE=hybrid`): weather = real (Open-Meteo, no key); ETA/traffic = real (OSRM; public demo server by default, self-hosted optional); local events = news/RSS ingestion + curated feed, classified by P3; flight status = provider API when a key is set, otherwise simulated. The **Demo Control Panel injection stays available** and everything it injects is labelled `SIMULATED`. Real signals show their real source and `is_simulated=false`. | Real where possible, controllable for demos |
+| A6 | Currency INR (integer rupees). Timezone Asia/Kolkata; datetimes ISO-8601 with `+05:30`. | One convention |
+| A7 | **Inventory covers 5 destinations**: Munnar (golden), Coorg, Hampi, Goa, plus a multi-stop Kerala circuit (Kochi → Munnar → Alleppey) so the multi-city planner is exercised. | Shows it generalises |
+| A8 | Exactly three builders. The deck lists four names; a fourth person, if any, owns pitch, `docs/DEMO_SCRIPT.md`, backup video and user testing. | Load balance |
+| A9 | The LLM never produces prices, times or feasibility numbers. Those come only from solver/engine/supplier data, and a guard enforces it. | Core trust principle |
+| A10 | Messaging is real where credentials exist: WhatsApp (Meta Cloud API or Twilio sandbox), email (SMTP), web push (VAPID). `NOTIFY_MODE=live \| sim`; same code path, sim writes to an outbox that the UI shows. | Reach and honesty |
+| A11 | The product never processes real payments or issues real tickets; "booking" means a supplier-sandbox/TBO booking call. Location history is never stored (latest point only). | Safety and privacy |
+
+**Principle (do not break).** *LLM reasons, solver certifies, supplier layer books, traveller approves every consequential action.*
+
+## B2. Users, journeys and feature scope
+
+**Users.** Traveller (individual), Group (2–5 travellers with one shared trip), Advisor (TBO travel advisor watching many client trips: the B2B2C "Copilot").
+
+| Journey | Steps |
+|---|---|
+| J1 Plan | Chat (text, voice, Hinglish) → ≤2 follow-ups → destination options → Plan A + Plan B with proof |
+| J2 Review proof | Prices show source and freshness; uncertainty visible; Plan A/B compare; carbon and flex-vs-saver cost shown |
+| J3 Book | Review → explicit approve → per-item honest status; optionality-aware fare choice |
+| J4 Guard | Journey Pulse at POST_BOOKING, T-72h, T-24h, T-3h, LIVE → tiered alerts with one-tap action, quiet hours, channel choice |
+| J5 Switch | Disruption → Slack Score amber/red → Switch recommendation (FULL/MIXED) → approve → bookings updated, courtesy messages sent |
+| J6 Live reroute | Opt-in location vs deadlines → slack + reroute options; geofenced prompts |
+| J7 Evidence | Auto-built claim pack with timeline and sources, exportable as PDF |
+| J8 Post-booking | Ask about reservations in chat, open vouchers, modify or cancel with quote and approval |
+| J9 Group | Invite → merge preferences → vote on Plan A/B → fair cost split → regroup points → per-person alerts |
+| J10 Offline and safety | Offline pack (PWA), share live trip with a trusted contact, safe-arrival check-ins, SOS |
+| J11 Advisor | Dashboard of client trips by health → open trip → notes → act on behalf with client consent |
+| J12 Responsible | Carbon per choice, crowd-relief and local/eco alternatives |
+| J13 Messaging | Same agent over WhatsApp (inbound webhook): ask status, approve a switch by reply, receive alerts |
+
+### Feature catalogue (everything below ships; owner = who leads, others support)
+
+| ID | Feature | Lead | Phase |
+|---|---|---|---|
+| F1 | Conversational planning, clarifying questions, destination recommendations | P3 | 1 |
+| F2 | Proof-carrying plans (CP-SAT, checks, source/freshness on every price) | P3 | 1 |
+| F3 | Booking with approval, idempotency, honest states, price-change handling | P2 | 1 |
+| F4 | Guardian Autopilot (Journey Pulse windows, tiered alerts, one-tap actions) | P2 | 2 |
+| F5 | Twin Plans: Plan B stored and **kept warm** (scheduled price/availability re-checks, regenerate on change) | P3 + P2 | 3 |
+| F6 | Switch Engine (FULL and MIXED), commitment-preserving recovery | P3 | 3 |
+| F7 | Live Reroute (real ETA via OSRM, geofenced prompts, reroute options) | P3 | 3 |
+| F8 | Slack Score and Journey Health Meter | P3 + P1 | 2 |
+| F9 | Time Banking (Must/Nice/Skip ranking, day re-balancing) | P3 + P1 | 3 |
+| F10 | Courtesy Agent (drafts, approval, send via WhatsApp/email; en, hi, Hinglish) | P3 | 3 |
+| F11 | Claim-ready Evidence Pack, PDF export | P3 + P2 | 3 |
+| F12 | Optionality-aware booking (flex vs saver using expected cost of risk) | P3 | 3 |
+| F13 | Local Pulse (bandh/strike/festival/landslide/road-restriction radar with source + confidence) | P2 + P3 | 2 |
+| F14 | WhatsApp-first, Hinglish and voice input | P2 + P3 + P1 | 5 |
+| F15 | Offline Trip Pack (PWA) and SOS: share live trip, safe-arrival check-in | P1 + P2 | 5 |
+| F16 | Group Mode (2–5) | all | 4 |
+| F17 | Responsible Travel layer (CO₂, crowd relief, local/eco options) | P3 + P1 | 5 |
+| F18 | Post-booking management: vouchers, modify, cancel with quote | P2 | 1–3 |
+| F19 | Advisor Copilot console (B2B2C) | P1 + P2 | 4 |
+| F20 | Accounts, roles, notification preferences, quiet hours, sensitivity | P2 + P1 | 4 |
+| F21 | Web push and email notifications | P2 | 4 |
+| F22 | Delivery: CI, Docker images, deployment, observability, security hardening | P3 + P2 | 6 |
+
+**Explicitly out of the product (stated so nobody builds them):** real payment processing, real ticket issuance, native mobile apps (the PWA covers mobile), any storage of location history.
+
+**Screens.** `/login`, `/` plan workspace, `/trips`, `/trips/[id]` cockpit (Itinerary, Guardian, Bookings, Live, Evidence, Group, Priorities, Responsible, Offline), switch decision card, drafts drawer, book dialog, `/trips/[id]/evidence`, `/settings` (notifications, language, privacy), `/share/[token]` (public read-only live trip), `/advisor`, `/advisor/[id]`, Demo panel (key `D`). Full specs: P1 packet.
+
+**Data entities.** User 1—* Trip; Trip 1—0..1 Group 1—* Member; Trip 1—2 Plan (A,B; versions) 1—* PlanItem 0..1 Booking; Trip 1—* Signal, Alert, SwitchRecommendation (1—* CourtesyDraft), EvidenceEvent, ChatMessage, Vote, TrustedContact, ShareLink, SafeCheckin, AdvisorNote.
+
+**Success criteria for the finished prototype.** All acceptance items in B11 pass from a clean clone; the golden demo runs in under 4 minutes without console errors or manual DB edits; the full journey also passes with `LLM_MODE=mock` and no internet (`SIGNAL_SOURCE=sim`, `NOTIFY_MODE=sim`, `SUPPLIER=mock`).
+
+## B3. Architecture and what is real vs mock
+
+```
+Traveller / Group / Advisor ─▶ Next.js PWA (P1) ──REST + SSE──▶ FastAPI (P2) ─▶ PostgreSQL
+WhatsApp ─▶ webhook ──────────────────────────────────────────────▶ FastAPI      └─▶ Redis (cache, pub/sub, Celery broker)
+                                         ├─▶ engine/ (P3, pure Python: OR-Tools, Slack, Switch, Live, Group, Optionality, Responsible, Evidence)
+                                         ├─▶ agent/  (P3, LangGraph + Gemini, mock fallback)
+                                         ├─▶ suppliers/ (P2: TboLive ▸ MockTbo)        ├─▶ providers/ (P2: Open-Meteo, OSRM, flight status, news)
+                                         └─▶ notify/ (P2: WhatsApp, email, web push, in-app)
+Celery worker + beat (P2): Journey Pulse, Plan-B warm-refresh, safe-check-in timers ─▶ Signals ─▶ Alerts / Switch / Drafts ─▶ SSE + channels
+Demo layer (P2): SimClock + injector (always labelled SIMULATED)
+```
+
+| Part | Status |
+|---|---|
+| LangGraph agent + Gemini (intent, explanation, drafts, local-event classification) | **Real**, deterministic `LLM_MODE=mock` fallback |
+| OR-Tools solver, Plan B, MIXED switch, Time Banking, optionality, group merge, responsible layer | **Real** |
+| PostgreSQL, Alembic migrations, REST, SSE, Celery, Redis | **Real** |
+| Auth (JWT), roles, rate limiting, audit log | **Real** |
+| TBO inventory and booking | **Real adapter** (needs credentials); mock for tests/offline |
+| Weather (Open-Meteo), ETA/traffic (OSRM) | **Real** |
+| Local events | **Real ingestion** (RSS/news) + curated feed; classified |
+| Flight status | Real when a provider key is set, else **simulated** |
+| WhatsApp / email / web push | **Real** with credentials, **simulated outbox** otherwise (labelled) |
+| Map display | **Real**: MapLibre GL rendering a self-hosted PMTiles extract of OpenStreetMap data (free, works offline); the app never bulk-fetches from the public OSM tile servers |
+| Location | Browser geolocation (real) or simulated drive (demo) |
+| Demo injections (`/demo/*`) | **Simulated**, labelled, only when `DEMO_MODE=1` |
+
+**Technology.** Frontend: Next.js 14 App Router, TypeScript, Tailwind (CSS-variable tokens), TanStack Query, `EventSource`, lucide-react, MapLibre GL + PMTiles (self-hosted map file), next-intl (en, hi), Web Speech API, Workbox service worker. Backend: FastAPI, SQLAlchemy 2, Alembic, psycopg, Celery + Redis, `sse-starlette`, httpx, PyJWT + passlib, pywebpush, aiosmtplib, slowapi. Engine/agent: ortools, pydantic v2, langgraph, google-genai, numpy. Tests: pytest, Playwright, Schemathesis (API fuzz).
+**Conventions.** JSON keys `snake_case` end to end. IDs are prefixed strings (`usr_`, `trip_`, `plan_`, `it_`, `bk_`, `al_`, `sw_`, `dr_`, `grp_`). One error envelope (B6.4). Every external fact carries `Provenance`. `types.ts` is **generated** from `models.py` by `scripts/gen_types.py` (never hand-edited).
+
+## B4. Project file tree and owners
+
+Owner key: **P1** frontend, **P2** backend/data, **P3** engine/agent/contracts/integration. "May edit" = only the owner; everyone else files a change request (B9).
+
+```
+wayfinder-one/
+├── README.md  Makefile  .env.example (per-person blocks)  requirements-engine.txt            P3
+├── docker-compose.yml  docker-compose.prod.yml  deploy/ (Dockerfiles, fly/render configs)    P2
+├── .github/workflows/ci.yml                                                                  P3
+├── docs/ ARCHITECTURE.md DEMO_SCRIPT.md CHANGE_REQUESTS.md AI_TOOLS_USED.md SECURITY.md TEST_PLAN.md   P3
+├── contracts/                        P3 ONLY
+│   ├── models.py  types.ts (generated)  errors.md  fixtures/ (one JSON per endpoint, inventory_*.json, golden_*.json, group_*.json, advisor_*.json)
+├── scripts/                          P3   gen_types.py  make_pmtiles.sh  smoke.py  wait_for_api.sh  record_demo_state.py
+├── engine/                           P3   (pure functions; no DB, no network)
+│   ├── config.py geo.py planner.py multicity.py validator.py slack.py switch.py timebank.py live.py evidence.py
+│   ├── optionality.py group.py responsible.py localpulse_rules.py stubs.py (deleted at end of Phase 3)  errors.py
+│   └── tests/
+├── agent/                            P3   (LangGraph + Gemini; no DB, no HTTP)
+│   ├── llm.py prompts.py graph.py courtesy.py guards.py mock_llm.py localpulse_classifier.py i18n.py (en, hi, hinglish templates)
+│   └── tests/ + evals/ (golden prompt set, scored)
+├── backend/                          P2
+│   ├── requirements.txt  alembic.ini  alembic/versions/  ruff.toml
+│   ├── app/main.py config.py deps.py db.py models_db.py events.py errors.py security.py ratelimit.py audit.py
+│   ├── app/routes/ auth.py me.py chat.py trips.py booking.py alerts.py switch.py drafts.py evidence.py live.py vouchers.py
+│   │              groups.py priorities.py optionality.py responsible.py share.py safety.py offline.py advisor.py webhooks.py demo.py health.py
+│   ├── app/services/ one per route area + pulse_service planb_service notification_service sim_service
+│   ├── app/suppliers/ base.py mock_tbo.py tbo_live.py hybrid.py registry.py recorded/ (fixtures of real responses)
+│   ├── app/providers/ weather_openmeteo.py eta_osrm.py flight_status.py local_events.py registry.py
+│   ├── app/notify/ base.py whatsapp.py email.py webpush.py inapp.py outbox.py
+│   ├── app/worker/ celery_app.py tasks.py beat_schedule.py
+│   ├── seed/ seed.py route_cok_munnar.json users.json
+│   └── tests/
+├── frontend/                         P1
+│   ├── package.json tsconfig.json next.config.mjs tailwind.config.ts postcss.config.mjs .prettierrc
+│   ├── public/ manifest.webmanifest icons/ sw.js (Workbox build output)
+│   └── src/
+│       ├── app/ layout.tsx globals.css page.tsx login/ settings/ trips/ trips/[id]/ trips/[id]/evidence/ share/[token]/ advisor/ advisor/[id]/ dev/states/
+│       ├── components/ ui/* auth/* chat/* itinerary/* guardian/* switch/* drafts/* live/* bookings/* evidence/* group/* priorities/* responsible/* offline/* safety/* advisor/* demo/*
+│       ├── lib/ api/{client,endpoints,fixtures}.ts sse.ts format.ts queryKeys.ts auth.ts pwa.ts speech.ts
+│       ├── i18n/ en.json hi.json
+│       ├── hooks/ useTrip useSlack useAlerts useSwitch useLive useTripEvents useAuth useVoice useOfflinePack
+│       └── styles/tokens.css
+└── tests/ contract/ (P3)   e2e/ (P3: Playwright)   load/ (P3: k6 or locust)
+```
+
+## B5. Golden demo scenario (single source of numbers)
+
+All three people test against this. P3 owns the numbers (`contracts/fixtures/inventory_kerala.json`, `golden_*.json`); P2 serves them; P1 renders them. **Prices and flights are simulated and fictional.**
+
+**Request (typed, spoken or the "Try the demo" chip):** *"Plan a 5-day budget trip from Bengaluru for 2 people, early December, around ₹55,000. We like tea estates, waterfalls and sunsets. Avoid driving on ghat roads after dark."*
+**Trip:** Sat 5 Dec to Wed 9 Dec 2026, BLR → Munnar, 2 travellers, budget ₹55,000. Sim window clock anchors: T-72h = 2 Dec 07:40, T-24h = 4 Dec 07:40, T-3h = 5 Dec 04:40, LIVE = 5 Dec 10:20.
+
+**Plan A (approved plan)**
+
+| Day | Item id | Item | Time | ₹ | Notes |
+|---|---|---|---|---|---|
+| 1 | it_a_f1 | Flight BLR→COK (sim) | 07:40–09:05 | 8,600 | fixed, non-refundable |
+| 1 | it_a_t1 | Cab COK→Munnar | 09:50–14:20 | 4,300 | GHAT_ROAD, refundable until 4 Dec 09:50 |
+| 1 | it_a_e1 | Eravikulam NP timed entry | 15:00–17:00 | 1,000 | MUST, RAIN, hard_deadline last entry 15:45, rebooking fee ₹400 |
+| 1–5 | it_a_h1 | Tea Valley Resort, 4 nights | check-in 14:30–20:00 | 16,000 | refundable until 3 Dec 18:00, check-in cut-off 20:00 |
+| 2 | it_a_tm | Tea Museum | 10:00–11:30 | 400 | NICE, indoor |
+| 2 | it_a_mb | Mattupetty Dam boating | 13:30–15:00 | 900 | NICE |
+| 3 | it_a_wf | Lakkam waterfall guided trek | 08:30–13:00 | 1,600 | MUST, RAIN |
+| 4 | it_a_ts | Top Station sunset point (jeep) | 16:00–19:00 | 1,400 | NICE, RAIN, CROWD |
+| 5 | it_a_t2 | Cab Munnar→COK | 10:00–14:30 | 4,300 | GHAT_ROAD |
+| 5 | it_a_f2 | Flight COK→BLR (sim) | 17:35–19:00 | 7,800 | fixed |
+
+Total ₹46,300, headroom ₹8,700 (meals and shopping excluded and stated as such).
+
+**Plan B (stored, kept warm):** same flights/hotel, cab leaves later and avoids night ghat driving; Eravikulam moves to Day 2 09:00; Waterfall trek replaced by *Spice plantation + cooking class* (rain-safe); Top Station replaced by *Tea factory tour*. Refundable components preferred.
+
+**Scripted story → expected system behaviour**
+
+| Step | Action | Expected |
+|---|---|---|
+| 1 | Send request | Intent complete (or ≤2 follow-ups), Plan A + B with proof checks, ₹ with source/freshness |
+| 2 | Book Plan A | Review dialog → approve → flights/cab CONFIRMED, hotel **PENDING** (with `SUPPLIER=mock`, confirms ~20s later → SSE `booking.updated`) |
+| 3 | Clock → T-72h, then T-24h | Local Pulse + weather alert (Day 3 rain risk, Plan B ready); T-24h web check-in NUDGE; health GREEN → AMBER borderline |
+| 4 | Clock → T-3h, inject `FLIGHT_DELAY 55` | Slack Score AMBER, ACTION_NEEDED alert, SwitchRecommendation |
+| 5 | Open switch card | Plan A ≈ 50–65%, Plan B ≥ 90%, mode MIXED, delta ≈ +₹1,800 (band 1,200–2,400), lost item: Mattupetty boating (NICE) |
+| 6 | Clock → LIVE, play simulated drive + inject `TRAFFIC_JAM 25` | Next commitment slack shrinks, reroute options shown |
+| 7 | Approve switch + drafts | Hotel/driver/vendor drafts approved (SENT, simulated), Eravikulam rebooked, kept bookings unchanged, new Plan A v2, new Plan B regenerated |
+| 8 | Open Evidence | Timeline: delay source, bookings, extra cost, claim sections |
+
+**Target bands (P3 tunes, golden test enforces).** Baseline Plan A feasibility ≥ 0.85 (GREEN). After `FLIGHT_DELAY 55`: Plan A 0.45–0.65, Plan B ≥ 0.90, health AMBER. After `FLIGHT_DELAY 120`: health RED. Nobody hard-codes these numbers in UI or backend.
+
+### Secondary scenarios (each has a golden test and an e2e spec)
+
+| ID | Scenario | Expected behaviour |
+|---|---|---|
+| S-G Group | 4 friends plan Coorg, 3 nights, ₹16,000 each. Members `usr_g1..g4` have conflicting preferences (one vegetarian, one wants adventure, budgets ₹12k–₹20k). | Merged intent shows **explicit conflicts and how they were resolved**; vote on Plan A/B (majority + owner tiebreak); cost split sums exactly to the total (largest-remainder rounding); when `usr_g3` is delayed (inject) a **regroup point** is suggested and only affected members get the ACTION alert |
+| S-A Advisor | Advisor `advisor@demo.wf` has 6 client trips in mixed health. | `/advisor` lists them sorted RED→GREEN with next risk; opening one shows the same cockpit read-only plus notes; acting on a switch needs the traveller's recorded consent flag |
+| S-W WhatsApp | Traveller replies "status" then "yes switch" to an alert on WhatsApp. | Inbound webhook (signature verified) maps phone → user, answers from the Twin, and `yes` is treated as approval **only** for the exact pending recommendation id and only within 30 minutes; anything ambiguous asks again |
+| S-R Responsible | Munnar plan with a car-heavy day. | Report shows total CO₂ and per-mode split; suggests a lower-crowd alternative slot and a local-economy option; selecting one produces a revalidated plan with the delta |
+| S-O Offline/SOS | Trip active, network cut. | Offline pack loads itinerary, vouchers, Plan B, contacts and the cached regional map file; SOS queues and sends on reconnect; missed safe-check-in notifies the trusted contact; share link shows only live status, never PII |
+| S-M Multi-city | Kochi → Munnar → Alleppey, 6 nights. | Solver orders legs, validates inter-city transfers, produces Plan A and a different Plan B |
+| S-O2 Optionality | Same Munnar trip. | Report marks the cab and Eravikulam ticket as high-risk, recommends flexible options where `expected_loss > flex_premium`, and shows total cost *including* expected disruption cost for both choices |
+
+## B6. Shared input/output and API contracts
+
+**Contract version `1.0.0`** (covers the full-scope product). Source of truth is `contracts/models.py` (P3). `contracts/types.ts` mirrors it 1:1 (mapping: `str`→`string`, `int/float`→`number`, `datetime/date`→ISO `string`, `Optional[X]`→`X | null`, `Literal[...]`→string union, `dict`→`Record<string, unknown>`). The version is returned by `GET /health` and shown in the frontend footer. A mismatch logs a console warning.
+
+### B6.1 Models (Python, canonical)
+
+```python
+# contracts/models.py
+from __future__ import annotations
+from datetime import datetime, date
+from typing import Any, Literal, Optional
+from pydantic import BaseModel, Field
+
+CONTRACT_VERSION = "1.0.0"
+
+ItemType      = Literal["FLIGHT", "HOTEL", "TRANSFER", "ACTIVITY"]
+Priority      = Literal["MUST", "NICE", "SKIP_IF_NEEDED"]
+BookingStatus = Literal["NOT_BOOKED", "HELD", "PENDING", "CONFIRMED", "FAILED", "CANCELLED"]
+AlertLevel    = Literal["INFO", "NUDGE", "ACTION_NEEDED", "CRITICAL"]
+Health        = Literal["GREEN", "AMBER", "RED"]
+RiskTag       = Literal["RAIN", "GHAT_ROAD", "CROWD", "STRIKE", "HEAT"]
+Window        = Literal["POST_BOOKING", "T-72H", "T-24H", "T-3H", "LIVE"]
+TripStatus    = Literal["DRAFT", "PLANNED", "BOOKED", "ACTIVE", "COMPLETED"]
+
+class Provenance(BaseModel):
+    source: str                         # "TBO Sandbox (sim)", "Flight status feed (sim)"
+    checked_at: datetime
+    is_simulated: bool = True
+    confidence: float = Field(1.0, ge=0, le=1)
+
+class Place(BaseModel):
+    name: str
+    lat: float = Field(ge=-90, le=90)
+    lng: float = Field(ge=-180, le=180)
+
+class BookingRef(BaseModel):
+    booking_id: str
+    status: BookingStatus
+    supplier_ref: Optional[str] = None
+
+class PlanItem(BaseModel):
+    id: str
+    type: ItemType
+    title: str
+    day: int = Field(ge=1)
+    start: datetime
+    end: datetime
+    origin: Optional[Place] = None
+    place: Optional[Place] = None
+    price_inr: int = Field(ge=0)
+    price_provenance: Provenance
+    refundable: bool
+    cancel_by: Optional[datetime] = None
+    priority: Priority = "NICE"
+    fixed: bool = False                         # time cannot move (flights, timed tickets)
+    hard_deadline: Optional[datetime] = None    # last entry, hotel check-in cut-off
+    depends_on: list[str] = []
+    risk_tags: list[RiskTag] = []
+    indoor: bool = False
+    co2_kg: Optional[float] = None
+    rebook_fee_inr: Optional[int] = None
+    booking: Optional[BookingRef] = None
+
+class ProofCheck(BaseModel):
+    name: str                 # "budget", "hard_connection:it_a_t1->it_a_e1", "daily_hours", "no_night_ghat"
+    passed: bool
+    detail: str               # human readable, numbers come from the solver
+
+class Validation(BaseModel):
+    feasible: bool
+    checks: list[ProofCheck]
+    min_slack_min: int
+    budget_headroom_inr: int
+    feasibility: float = Field(ge=0, le=1)
+    solver: str = "ortools-cp-sat"
+    solve_ms: int = 0
+
+class Plan(BaseModel):
+    id: str
+    trip_id: str
+    kind: Literal["A", "B"]
+    version: int = 1
+    items: list[PlanItem]
+    total_cost_inr: int
+    validation: Validation
+    summary: str = ""
+    created_at: datetime
+    superseded: bool = False
+
+class SlackComponents(BaseModel):
+    time_buffer: int; delay_risk: int; weather_risk: int; crowd_risk: int; budget_headroom: int   # each 0-100, higher = safer
+
+class SlackScore(BaseModel):
+    trip_id: str
+    health: Health
+    score: int = Field(ge=0, le=100)
+    components: SlackComponents
+    weakest_item_id: Optional[str] = None
+    explanation: str
+    computed_at: datetime
+
+class DestinationOption(BaseModel):
+    name: str; why: str; est_budget_inr: int; available: bool
+
+class TripIntent(BaseModel):
+    origin: Optional[str] = None
+    destination: Optional[str] = None
+    start_date: Optional[date] = None
+    nights: Optional[int] = Field(None, ge=1, le=14)
+    travellers: Optional[int] = Field(None, ge=1, le=9)
+    budget_inr: Optional[int] = Field(None, ge=1000)
+    interests: list[str] = []
+    constraints: list[str] = []
+    pace: Optional[Literal["RELAXED", "BALANCED", "PACKED"]] = None
+    must_dos: list[str] = []
+    missing: list[str] = []          # empty => ready to plan
+
+class ActionRef(BaseModel):
+    action: Literal["SWITCH_PLAN", "APPROVE_DRAFTS", "CHECK_IN", "KEEP_PLAN", "BOOK_PLAN", "CANCEL_BOOKING", "VIEW"]
+    label: str
+    params: dict[str, Any] = {}
+
+class Trip(BaseModel):
+    id: str
+    title: str
+    status: TripStatus
+    intent: TripIntent
+    active_plan: Literal["A", "B"] = "A"
+    plan_a_id: Optional[str] = None
+    plan_b_id: Optional[str] = None
+    sim_now: Optional[datetime] = None
+    sim_window: Optional[Window] = None
+    owner_id: str
+    group_id: Optional[str] = None
+    advisor_id: Optional[str] = None
+    advisor_consent: bool = False
+    created_at: datetime
+
+class Booking(BaseModel):
+    id: str; trip_id: str; plan_id: str; item_id: str
+    status: BookingStatus
+    supplier_ref: Optional[str] = None
+    amount_inr: int
+    refundable: bool
+    failure_reason: Optional[str] = None
+    penalty_inr: Optional[int] = None          # set after a cancellation
+    updated_at: datetime
+
+class Signal(BaseModel):
+    id: str; trip_id: str
+    kind: Literal["FLIGHT_STATUS", "WEATHER", "LOCAL_EVENT", "TRAFFIC", "HOTEL_CONFIRMATION", "FARE_RULE"]
+    item_id: Optional[str] = None
+    severity: int = Field(ge=0, le=3)
+    summary: str
+    payload: dict[str, Any] = {}              # e.g. {"delay_min": 55} | {"rain": "HEAVY", "day": 3}
+    provenance: Provenance
+
+class Alert(BaseModel):
+    id: str; trip_id: str
+    level: AlertLevel
+    window: Window
+    title: str
+    body: str
+    provenance: Provenance                     # source + freshness shown on every alert
+    recommended_action: Optional[ActionRef] = None
+    state: Literal["NEW", "SEEN", "APPROVED", "DISMISSED", "EXPIRED"] = "NEW"
+    audience_user_ids: list[str] = []          # empty = everyone on the trip
+    channels_sent: list[str] = []              # Channel values actually used
+    created_at: datetime
+
+class LostItem(BaseModel):
+    item_id: str; title: str; priority: Priority
+
+class SwitchRecommendation(BaseModel):
+    id: str; trip_id: str
+    mode: Literal["FULL", "MIXED"]
+    reason: str
+    feasibility_a: float; feasibility_b: float
+    slack_a_min: int; slack_b_min: int
+    delta_cost_inr: int
+    lost_items: list[LostItem]
+    kept_booking_item_ids: list[str]           # commitment-preserving: stays untouched
+    changed_booking_item_ids: list[str]        # cancel/rebook needed
+    resulting_plan: Plan                       # the plan that becomes active if approved (kind A, version+1)
+    sources: list[Provenance]
+    state: Literal["PROPOSED", "APPROVED", "REJECTED", "EXECUTED", "FAILED", "EXPIRED"] = "PROPOSED"
+    created_at: datetime
+
+class CourtesyDraft(BaseModel):
+    id: str; trip_id: str; recommendation_id: Optional[str] = None
+    recipient_kind: Literal["HOTEL", "DRIVER", "VENDOR", "COMPANION"]
+    recipient_name: str
+    channel: Literal["WHATSAPP", "EMAIL", "SMS"]
+    language: Literal["en", "hi", "hinglish"] = "en"
+    subject: Optional[str] = None
+    body: str
+    state: Literal["DRAFT", "APPROVED", "SENT", "DISCARDED"] = "DRAFT"    # SENT = simulated
+    created_at: datetime
+
+class EvidenceEvent(BaseModel):
+    id: str; trip_id: str; ts: datetime
+    kind: Literal["SIGNAL", "ALERT", "SWITCH", "BOOKING", "COST", "DRAFT", "NOTE"]
+    source: str
+    detail: str
+    ref: dict[str, Any] = {}
+
+class ClaimSection(BaseModel):
+    type: Literal["AIRLINE", "INSURANCE", "SUPPLIER"]
+    summary: str
+    amount_inr: Optional[int] = None
+    attachments: list[str] = []                # booking ids, signal ids
+
+class EvidencePack(BaseModel):
+    trip_id: str; generated_at: datetime
+    events: list[EvidenceEvent]
+    total_delay_min: int
+    extra_cost_inr: int
+    claim_sections: list[ClaimSection]
+
+class RerouteOption(BaseModel):
+    id: str
+    mode: Literal["DRIVE", "METRO", "WALK", "CAB", "RESHUFFLE_DAY", "SHIFT_SLOT", "USE_PLAN_B_SEGMENT"]
+    title: str
+    eta_min: Optional[int] = None
+    slack_min: int
+    delta_cost_inr: int
+    note: str
+    provenance: Provenance
+    action: Optional[ActionRef] = None
+
+class NextCommitment(BaseModel):
+    item_id: str; title: str; arrive_by: datetime
+    eta_min: int; slack_min: int; health: Health
+
+class GeofencePrompt(BaseModel):
+    kind: Literal["ARRIVED_HOTEL", "LEAVING_VENUE", "OFF_ROUTE"]
+    title: str; body: str
+
+class LiveStatus(BaseModel):
+    trip_id: str; as_of: datetime
+    location: Optional[Place] = None
+    tracking_on: bool
+    next_commitment: Optional[NextCommitment] = None
+    reroute_options: list[RerouteOption] = []
+    geofence_prompt: Optional[GeofencePrompt] = None
+
+class Voucher(BaseModel):
+    booking_id: str; title: str; reference: str; html_url: str
+
+# ---- request / response wrappers ----
+class ChatRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=2000)
+    trip_id: Optional[str] = None
+    locale: Literal["en", "hi", "hinglish"] = "en"
+    input_mode: Literal["TEXT", "VOICE"] = "TEXT"
+
+class ChatResponse(BaseModel):
+    trip_id: str
+    stage: Literal["CLARIFYING", "RECOMMENDING", "PLANNED", "ANSWER"]
+    assistant_message: str
+    intent: TripIntent
+    quick_replies: list[str] = []
+    destination_options: list[DestinationOption] = []
+    plan_a: Optional[Plan] = None
+    plan_b: Optional[Plan] = None
+    proposed_action: Optional[ActionRef] = None     # e.g. CANCEL_BOOKING awaiting approval
+
+class TripDetail(BaseModel):
+    trip: Trip; plan_a: Optional[Plan]; plan_b: Optional[Plan]
+    bookings: list[Booking]; slack: Optional[SlackScore]; unread_alerts: int
+
+class TripSummary(BaseModel):
+    id: str; title: str; status: TripStatus; health: Optional[Health]; start_date: Optional[date]; total_cost_inr: Optional[int]
+
+class BookRequest(BaseModel):
+    plan: Literal["A", "B"] = "A"
+    approve: bool                                   # must be true or API returns APPROVAL_REQUIRED
+    idempotency_key: str = Field(pattern=r"^[A-Za-z0-9_-]{8,64}$")
+
+class BookResult(BaseModel):
+    status: Literal["CONFIRMED", "PARTIAL", "PENDING"]
+    bookings: list[Booking]
+    message: str
+
+class AlertAck(BaseModel):
+    action: Literal["APPROVE", "DISMISS", "SEEN"]
+
+class SwitchDecision(BaseModel):
+    decision: Literal["APPROVE", "REJECT"]
+    approve_draft_ids: list[str] = []
+    idempotency_key: str = Field(pattern=r"^[A-Za-z0-9_-]{8,64}$")
+
+class SwitchResult(BaseModel):
+    recommendation: SwitchRecommendation
+    trip: Trip
+    plan_a: Plan; plan_b: Optional[Plan]
+    bookings: list[Booking]
+    drafts: list[CourtesyDraft]
+    evidence_event_ids: list[str]
+
+class DraftDecision(BaseModel):
+    decision: Literal["APPROVE", "EDIT", "DISCARD"]
+    body: Optional[str] = None                      # required when EDIT
+
+class LocationPing(BaseModel):
+    lat: float = Field(ge=-90, le=90); lng: float = Field(ge=-180, le=180)
+    speed_kmh: Optional[float] = Field(None, ge=0, le=400)
+    ts: datetime
+
+class CancelRequest(BaseModel):
+    approve: bool
+    idempotency_key: str = Field(pattern=r"^[A-Za-z0-9_-]{8,64}$")
+
+class DemoClock(BaseModel):
+    window: Window
+
+class DemoInject(BaseModel):
+    kind: Literal["FLIGHT_DELAY", "RAIN", "BANDH", "TRAFFIC_JAM"]
+    params: dict[str, Any] = {}                     # FLIGHT_DELAY {"minutes":55} | RAIN {"day":3,"intensity":"HEAVY"} | BANDH {"day":2} | TRAFFIC_JAM {"minutes":25}
+
+class ErrorBody(BaseModel):
+    code: Literal["VALIDATION_ERROR", "NOT_FOUND", "CONFLICT", "APPROVAL_REQUIRED", "INVALID_STATE",
+                  "SUPPLIER_UNAVAILABLE", "PRICE_CHANGED", "SOLVER_INFEASIBLE", "LLM_UNAVAILABLE", "INTERNAL",
+                  "UNAUTHENTICATED", "FORBIDDEN", "RATE_LIMITED", "CONSENT_REQUIRED"]
+    message: str
+    details: Optional[dict[str, Any]] = None
+    request_id: str
+
+class ErrorResponse(BaseModel):
+    error: ErrorBody
+```
+
+### B6.1b Additional models (same file, `contracts/models.py`)
+
+```python
+# ---- accounts, preferences, notifications ----
+Role = Literal["TRAVELLER", "ADVISOR"]
+Channel = Literal["IN_APP", "PUSH", "WHATSAPP", "EMAIL", "SMS"]
+
+class User(BaseModel):
+    id: str; email: str; name: str; role: Role = "TRAVELLER"
+    language: Literal["en", "hi", "hinglish"] = "en"
+
+class RegisterRequest(BaseModel):
+    email: str = Field(pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+    password: str = Field(min_length=8, max_length=128)
+    name: str = Field(min_length=1, max_length=80)
+    role: Role = "TRAVELLER"
+
+class LoginRequest(BaseModel):
+    email: str; password: str
+
+class TokenResponse(BaseModel):
+    access_token: str; token_type: Literal["bearer"] = "bearer"; expires_in: int; user: User
+
+class SseToken(BaseModel):                         # EventSource cannot send headers; 60s single-purpose token
+    token: str; expires_in: int = 60
+
+class NotificationPrefs(BaseModel):
+    user_id: str
+    channels: list[Channel] = ["IN_APP"]
+    whatsapp_number: Optional[str] = Field(None, pattern=r"^\+\d{8,15}$")
+    quiet_hours_start: Optional[str] = Field(None, pattern=r"^\d{2}:\d{2}$")   # "22:00"
+    quiet_hours_end: Optional[str] = Field(None, pattern=r"^\d{2}:\d{2}$")
+    sensitivity: Literal["LOW", "NORMAL", "HIGH"] = "NORMAL"   # LOW = only ACTION_NEEDED+; HIGH = everything but batched
+    language: Literal["en", "hi", "hinglish"] = "en"
+    # rule: CRITICAL ignores quiet hours; INFO/NUDGE are batched during quiet hours
+
+class PushSubscription(BaseModel):
+    endpoint: str; p256dh: str; auth: str
+
+# ---- group mode ----
+class GroupMember(BaseModel):
+    user_id: str; name: str; role: Literal["OWNER", "MEMBER"]; location_sharing: bool = False; joined_at: datetime
+
+class Group(BaseModel):
+    id: str; trip_id: str; invite_code: str; members: list[GroupMember]; created_at: datetime
+
+class GroupPreference(BaseModel):
+    user_id: str
+    budget_inr: Optional[int] = None
+    interests: list[str] = []
+    constraints: list[str] = []                    # "vegetarian", "no trekking"
+    pace: Optional[Literal["RELAXED", "BALANCED", "PACKED"]] = None
+    must_dos: list[str] = []
+
+class PrefConflict(BaseModel):
+    field: str; values: dict[str, Any]; resolution: str   # e.g. budget: min of members; constraints: union (hard)
+
+class MergedPreferences(BaseModel):
+    merged_intent: TripIntent; conflicts: list[PrefConflict]
+
+class VoteRequest(BaseModel):
+    plan_id: str; vote: Literal["A", "B", "NEITHER"]
+
+class VoteTally(BaseModel):
+    trip_id: str; votes: dict[str, str]; counts: dict[str, int]; leader: Optional[Literal["A", "B"]] = None
+    decided: bool = False; rule: str = "Majority of members; owner breaks ties"
+
+class CostSplit(BaseModel):
+    member_id: str; name: str; share_inr: int; item_ids: list[str] = []
+    # shares sum EXACTLY to plan total (largest-remainder rounding); method in SplitReport; item_ids reserved (empty in v1)
+class SplitReport(BaseModel):
+    trip_id: str; method: Literal["EQUAL", "BY_BUDGET"]; total_inr: int; shares: list[CostSplit]
+
+class RegroupSuggestion(BaseModel):
+    reason: str; point: Place; meet_by: datetime; member_etas_min: dict[str, int]; affected_user_ids: list[str]
+
+# ---- priorities, time banking, optionality, responsible ----
+class ItemPriorityUpdate(BaseModel):
+    item_id: str; priority: Priority
+class PrioritiesRequest(BaseModel):
+    priorities: list[ItemPriorityUpdate]
+
+class RebalanceRequest(BaseModel):
+    lost_min: int = Field(ge=1, le=600); from_item_id: str
+    apply: bool = False
+    approve: bool = False                          # required when apply=true
+    idempotency_key: Optional[str] = Field(None, pattern=r"^[A-Za-z0-9_-]{8,64}$")
+
+class RebalancePreview(BaseModel):
+    plan_preview: Plan; dropped: list[LostItem]; shortened: list[str]; summary: str; applied: bool = False
+
+class SwapItemRequest(BaseModel):
+    item_id: str; offer_id: str
+    apply: bool = False
+    approve: bool = False                          # required when apply=true
+    idempotency_key: Optional[str] = Field(None, pattern=r"^[A-Za-z0-9_-]{8,64}$")
+
+class SwapPreview(BaseModel):
+    plan_preview: Plan; delta_cost_inr: int; delta_co2_kg: Optional[float] = None
+    lost_items: list[LostItem] = []; changed_booking_item_ids: list[str] = []
+    summary: str; applied: bool = False
+
+class RiskLine(BaseModel):
+    item_id: str; disruption_prob: float; expected_loss_inr: int
+    flex_premium_inr: int; recommended: Literal["FLEX", "SAVER"]; reason: str
+class OptionalityReport(BaseModel):
+    trip_id: str; lines: list[RiskLine]
+    total_saver_inr: int; total_saver_with_risk_inr: int; total_flex_inr: int; recommendation: str
+
+class ResponsibleInsight(BaseModel):
+    item_id: Optional[str] = None
+    kind: Literal["CO2", "CROWD_RELIEF", "LOCAL_ECONOMY", "ECO_HERITAGE"]
+    title: str; detail: str
+    alternative_offer_id: Optional[str] = None
+    co2_saving_kg: Optional[float] = None; delta_cost_inr: Optional[int] = None
+class ResponsibleReport(BaseModel):
+    trip_id: str; total_co2_kg: float; by_mode: dict[str, float]; insights: list[ResponsibleInsight]
+    method: str                                   # emission-factor table name + version
+
+# ---- safety, sharing, offline ----
+class TrustedContact(BaseModel):
+    id: str; trip_id: str; name: str; phone: Optional[str] = None; email: Optional[str] = None
+class TrustedContactCreate(BaseModel):
+    name: str; phone: Optional[str] = Field(None, pattern=r"^\+\d{8,15}$"); email: Optional[str] = None
+
+class ShareLink(BaseModel):
+    token: str; url: str; expires_at: datetime; active: bool = True
+class SharedTripView(BaseModel):                  # public, read-only, NO PII (no booking refs, no phone numbers)
+    title: str; health: Health; next_stop: Optional[str] = None; eta: Optional[datetime] = None
+    last_location_name: Optional[str] = None; as_of: datetime
+
+class SafeCheckinCreate(BaseModel):
+    item_id: str; due_at: datetime
+class SafeCheckin(BaseModel):
+    id: str; trip_id: str; item_id: str; due_at: datetime
+    state: Literal["PENDING", "CONFIRMED", "MISSED"] = "PENDING"
+
+class SosRequest(BaseModel):
+    lat: Optional[float] = Field(None, ge=-90, le=90); lng: Optional[float] = Field(None, ge=-180, le=180)
+    message: Optional[str] = Field(None, max_length=300)
+class SosResult(BaseModel):
+    notified: list[str]; queued: bool = False
+
+class OfflineResource(BaseModel):
+    url: str; kind: Literal["ITINERARY", "VOUCHER", "PLAN_B", "CONTACTS", "MAP", "SOS"]; bytes: int
+class OfflineManifest(BaseModel):
+    trip_id: str; version: int; generated_at: datetime; resources: list[OfflineResource]; expires_at: datetime
+
+# ---- advisor ----
+class AdvisorTripRow(BaseModel):
+    trip_id: str; traveller_name: str; title: str; status: TripStatus
+    health: Optional[Health]; score: Optional[int]; next_risk: Optional[str]
+    unread_alerts: int; start_date: Optional[date]; has_consent: bool
+class AdvisorNote(BaseModel):
+    id: str; trip_id: str; advisor_id: str; body: str = Field(max_length=2000); created_at: datetime
+class AdvisorNoteCreate(BaseModel):
+    body: str = Field(min_length=1, max_length=2000)
+class AdvisorInvite(BaseModel):
+    advisor_email: str; consent_to_act: bool = False
+
+# ---- booking modification, messaging webhook ----
+class ModifyBookingRequest(BaseModel):
+    approve: bool
+    idempotency_key: Optional[str] = Field(None, pattern=r"^[A-Za-z0-9_-]{8,64}$")
+    new_start: Optional[datetime] = None; note: Optional[str] = Field(None, max_length=300)
+    # approve=false returns 400 APPROVAL_REQUIRED with details {fee_inr, new_price_inr, available} (the quote)
+
+class SignalView(BaseModel):                      # "why am I seeing this?" transparency list
+    signal: Signal; used_in: list[str]            # alert ids / recommendation ids
+```
+**Field additions** (`Alert.audience_user_ids/channels_sent`, `Trip.owner_id/group_id/advisor_id/advisor_consent`, `ChatRequest.input_mode`, new error codes) are already applied in B6.1 above.
+
+### B6.2 TypeScript types (generated, never hand-edited)
+
+`contracts/types.ts` is produced by `python scripts/gen_types.py` (P3; included in the starter repo) from `contracts/models.py` using each model's JSON schema (`str`→`string`, numbers→`number`, `datetime/date`→ISO `string`, `Optional[X]`→`X | null`, `Literal[...]`→string union, `dict`→`Record<string, unknown>`, lists→arrays). `make gen-types` regenerates it; CI fails if the committed file differs. Sample of the output:
+
+```ts
+export const CONTRACT_VERSION = "1.0.0";
+export type Health = "GREEN" | "AMBER" | "RED";
+export interface Provenance { source: string; checked_at: string; is_simulated: boolean; confidence: number }
+export interface SlackScore { trip_id: string; health: Health; score: number; components: SlackComponents;
+  weakest_item_id: string | null; explanation: string; computed_at: string }
+export interface ErrorResponse { error: ErrorBody }
+```
+
+### B6.3 Endpoints (base `/api/v1`, JSON, snake_case)
+
+| # | Method + path | Request | Response | Validation / errors |
+|---|---|---|---|---|
+| 1 | `POST /chat` | `ChatRequest` | `ChatResponse` | message 1–2000 chars → 422 `VALIDATION_ERROR`; LLM down in mock mode never errors; Gemini down falls back to mock |
+| 2 | `GET /trips` | – | `TripSummary[]` | – |
+| 3 | `GET /trips/{id}` | – | `TripDetail` | 404 `NOT_FOUND` |
+| 4 | `POST /trips/{id}/book` | `BookRequest` | `BookResult` | `approve=false` → 400 `APPROVAL_REQUIRED`; price moved → 409 `PRICE_CHANGED` with `details.items`; replay same key returns same result |
+| 5 | `GET /trips/{id}/bookings` | – | `Booking[]` | – |
+| 6 | `GET /trips/{id}/slack` | – | `SlackScore` | 404 if no plan |
+| 7 | `GET /trips/{id}/alerts?state=NEW` | – | `Alert[]` (newest first) | – |
+| 8 | `POST /alerts/{id}/ack` | `AlertAck` | `Alert` | 404 |
+| 9 | `GET /trips/{id}/switch` | – | `SwitchRecommendation \| null` (latest PROPOSED) | – |
+| 10 | `POST /switch/{id}/decision` | `SwitchDecision` | `SwitchResult` | not PROPOSED → 409 `INVALID_STATE`; supplier failure → 502 `SUPPLIER_UNAVAILABLE`, nothing half-applied (see P2 packet) |
+| 11 | `GET /trips/{id}/drafts` | – | `CourtesyDraft[]` | – |
+| 12 | `POST /drafts/{id}/decision` | `DraftDecision` | `CourtesyDraft` | EDIT without body → 422 |
+| 13 | `GET /trips/{id}/evidence` | – | `EvidencePack` | – |
+| 14 | `GET /trips/{id}/evidence/print` | – | HTML (printable) | – |
+| 15 | `POST /trips/{id}/location` | `LocationPing` | `LiveStatus` | invalid lat/lng → 422 |
+| 16 | `GET /trips/{id}/live` | – | `LiveStatus` | `tracking_on=false` if no ping in last 10 min |
+| 17 | `GET /trips/{id}/vouchers` | – | `Voucher[]` | only CONFIRMED bookings |
+| 18 | `POST /bookings/{id}/cancel` | `CancelRequest` | `Booking` | `approve=false` → 400 `APPROVAL_REQUIRED` with `details {penalty_inr, refundable, cancel_by}` (this is the quote the dialog shows); then `approve=true` performs it |
+| 19 | `GET /trips/{id}/events?sse_token=` | – | SSE stream | see B6.5; token from endpoint 31; events filtered by `audience_user_ids` |
+| 20 | `GET /demo/state` | – | `{trip_id, window, sim_now, injected: DemoInject[]}` | demo routes exist only when `DEMO_MODE=1` |
+| 21 | `POST /demo/seed-trip` | – | `TripDetail` (fully planned golden trip, no LLM) | – |
+| 22 | `POST /demo/clock?trip_id=` | `DemoClock` | `{window, sim_now}` + triggers a Pulse run | – |
+| 23 | `POST /demo/inject?trip_id=` | `DemoInject` | `{signal_ids: string[]}` + triggers a Pulse run | unknown kind → 422 |
+| 24 | `POST /demo/reset` | – | `{ok: true}` | wipes all tables, reseeds |
+| 25 | `GET /health` | – | `{status, contract_version, llm_mode, supplier, db}` | – |
+| 26 | `GET /demo/route` | – | `{points: [{lat: number, lng: number}]}` (simulated drive Kochi airport → Munnar) | demo mode only |
+| 27 | `GET /vouchers/{booking_id}.html` | – | HTML voucher (target of `Voucher.html_url`) | 404 if not CONFIRMED |
+
+
+### B6.3b Additional endpoints (continuing the table; same conventions)
+
+| # | Method + path | Request | Response | Rules / errors |
+|---|---|---|---|---|
+| 28 | `POST /auth/register` | `RegisterRequest` | `TokenResponse` | duplicate email → 409 `CONFLICT`; weak password → 422 |
+| 29 | `POST /auth/login` | `LoginRequest` | `TokenResponse` | bad credentials → 401 `UNAUTHENTICATED` (same message for unknown email and wrong password); 5 failures/min/IP → 429 `RATE_LIMITED` |
+| 30 | `GET /auth/me` | – | `User` | – |
+| 31 | `POST /auth/sse-token` | – | `SseToken` | used as `?sse_token=` on endpoint 19 |
+| 32 | `GET /me/preferences`, `PUT /me/preferences` | `NotificationPrefs` | `NotificationPrefs` | `whatsapp_number` E.164 |
+| 33 | `POST /me/push-subscription` | `PushSubscription` | `{ok: true}` | idempotent per endpoint |
+| 34 | `POST /trips/{id}/group` | – | `Group` | owner only; one group per trip |
+| 35 | `POST /groups/join` | `{invite_code}` | `Group` | unknown code → 404; group max 5 members → 409 |
+| 36 | `GET /trips/{id}/group` | – | `Group` | members only |
+| 37 | `PUT /trips/{id}/group/preferences` | `GroupPreference` | `MergedPreferences` | writes only the caller's own preference |
+| 38 | `GET /trips/{id}/group/merged` | – | `MergedPreferences` | – |
+| 39 | `POST /trips/{id}/votes`, `GET /trips/{id}/votes` | `VoteRequest` | `VoteTally` | one vote per member, changeable until decided |
+| 40 | `GET /trips/{id}/split` | – | `SplitReport` | `?method=EQUAL\|BY_BUDGET` (proportional to each member's stated budget) |
+| 41 | `GET /trips/{id}/regroup` | – | `RegroupSuggestion \| null` | needs ≥2 members sharing location |
+| 42 | `PUT /trips/{id}/priorities` | `PrioritiesRequest` | `Plan` (active plan, priorities updated) | unknown item → 422; re-runs validation |
+| 43 | `POST /trips/{id}/rebalance` | `RebalanceRequest` | `RebalancePreview` | `apply=true` needs `approve=true` + key (else 400 `APPROVAL_REQUIRED`); creates Plan A version+1 |
+| 44 | `GET /trips/{id}/optionality` | – | `OptionalityReport` | – |
+| 45 | `GET /trips/{id}/responsible` | – | `ResponsibleReport` | – |
+| 46 | `POST /trips/{id}/share`, `DELETE /trips/{id}/share` | `{ttl_hours?: int}` | `ShareLink` / `{ok}` | token ≥ 128-bit random; default 24h; owner only |
+| 47 | `GET /share/{token}` | – | `SharedTripView` | **public**, no auth; expired/revoked → 404; rate limited |
+| 48 | `GET/POST /trips/{id}/trusted-contacts` | `TrustedContactCreate` | `TrustedContact[]` / `TrustedContact` | max 5 |
+| 49 | `POST /trips/{id}/safe-checkins`, `POST /safe-checkins/{id}/confirm` | `SafeCheckinCreate` / – | `SafeCheckin` | missed → contacts notified by worker |
+| 50 | `POST /trips/{id}/sos` | `SosRequest` | `SosResult` | works offline via queued replay (client retries with same `Idempotency-Key` header) |
+| 51 | `GET /trips/{id}/offline-manifest` | – | `OfflineManifest` | version bumps whenever plan/bookings change |
+| 52 | `GET /trips/{id}/offline-pack` | – | JSON bundle of everything in the manifest | – |
+| 53 | `GET /advisor/trips` | – | `AdvisorTripRow[]` | role ADVISOR; only trips that invited this advisor |
+| 54 | `GET /advisor/trips/{id}`, `POST /advisor/trips/{id}/notes` | – / `AdvisorNoteCreate` | `TripDetail` + `AdvisorNote[]` / `AdvisorNote` | read-only unless `advisor_consent`; acting without consent → 403 `CONSENT_REQUIRED` |
+| 55 | `POST /trips/{id}/advisor` | `AdvisorInvite` | `Trip` | owner only; consent flag stored with timestamp in audit log |
+| 56 | `POST /bookings/{id}/modify` | `ModifyBookingRequest` | `Booking` | quote/approve pattern identical to cancel |
+| 57 | `GET /trips/{id}/signals` | – | `SignalView[]` | transparency |
+| 58 | `GET /trips/{id}/evidence/pdf` | – | PDF | same content as print page |
+| 59 | `GET /webhooks/whatsapp` | verify query | challenge echo | Meta verification handshake |
+| 60 | `POST /webhooks/whatsapp` | provider payload | `{ok: true}` | **HMAC signature required**; unknown phone → polite reply, no data |
+| 61 | `POST /trips/{id}/swap-item` | `SwapItemRequest` | `SwapPreview` | `apply=false` → preview (no change); `apply=true` needs `approve=true` + key (else 400 `APPROVAL_REQUIRED`); revalidates with the solver; infeasible → 422 `SOLVER_INFEASIBLE`; creates Plan A version+1 |
+
+**Authentication and authorization (applies to every endpoint except 25, 28, 29, 47, 59, 60).**
+- `Authorization: Bearer <jwt>`; HS256, 60-minute access token, `JWT_SECRET` from env. Passwords hashed with argon2/bcrypt. SSE uses the short-lived `sse_token` query parameter.
+- Trip access = owner, **group member**, or **assigned advisor** (advisor: read + notes; actions only with `advisor_consent`). Anything else → 403 `FORBIDDEN` (404 if the trip should not be discoverable).
+- Rate limits (slowapi): auth 5/min/IP, chat 30/min/user, others 120/min/user, public share 30/min/IP.
+- Every consequential action (book, switch, cancel, modify, rebalance apply, SOS, share-link creation, advisor invite) writes an **audit log** row (`who, what, when, request_id, idempotency_key`).
+- Group rule: only the trip **owner** can book, approve a switch or cancel; members can vote, edit their own preferences and confirm their own safe check-ins. (Owner may delegate nothing in this version.)
+
+**Safety rule update.** Endpoints 4, 10, 18, 43 (apply), 56 and 61 (apply) are the **only** ones that change bookings or plans; all require explicit approval plus an idempotency key.
+
+### B6.4 Error envelope
+
+```json
+{ "error": { "code": "PRICE_CHANGED", "message": "Fare for Cab COK→Munnar changed from ₹4,300 to ₹4,650.",
+             "details": { "items": [{ "item_id": "it_a_t1", "old_inr": 4300, "new_inr": 4650 }] }, "request_id": "req_8f2c1a" } }
+```
+Frontend rule: show `message` as is, use `code` for behaviour (e.g. `PRICE_CHANGED` opens the re-confirm dialog).
+
+### B6.5 SSE (`GET /trips/{id}/events`)
+
+Envelope: `event: <type>` and `data: {"trip_id":"…","ts":"…","data": <payload>}`. Heartbeat comment every 15s. `Last-Event-ID` is not required.
+
+| Event | Payload |
+|---|---|
+| `alert.created` | `Alert` |
+| `slack.updated` | `SlackScore` |
+| `switch.proposed` | `SwitchRecommendation` |
+| `plan.switched` | `SwitchResult` |
+| `draft.created` | `CourtesyDraft` |
+| `booking.updated` | `Booking` |
+| `sim.clock` | `{window, sim_now}` |
+| `signal.created` | `Signal` |
+| `plan.updated` | `{plan_id, kind, version, reason}` (e.g. Plan B warm-refresh or regeneration) |
+
+### B6.5b Additional SSE events
+
+| Event | Payload | Audience |
+|---|---|---|
+| `group.updated` | `Group` | members |
+| `vote.updated` | `VoteTally` | members |
+| `safe_checkin.due` | `SafeCheckin` | the member |
+| `notification.sent` | `{channel, to_masked, alert_id, state}` | owner (delivery transparency) |
+
+### B6.6 Concrete examples
+
+**Chat request / response (stage PLANNED, abbreviated)**
+```json
+{ "message": "Plan a 5-day budget trip from Bengaluru for 2 people, early December, around ₹55,000. We like tea estates, waterfalls and sunsets.", "trip_id": null, "locale": "en" }
+```
+```json
+{ "trip_id": "trip_01", "stage": "PLANNED",
+  "assistant_message": "Here is a Munnar plan for 2 on ₹46,300 with ₹8,700 to spare. Your tightest link is the cab to Eravikulam (65 min of slack). A rain-safe Plan B is stored.",
+  "intent": { "origin": "Bengaluru", "destination": "Munnar", "start_date": "2026-12-05", "nights": 4, "travellers": 2, "budget_inr": 55000,
+              "interests": ["tea estates","waterfalls","sunsets"], "constraints": ["no night ghat driving"], "pace": "BALANCED", "must_dos": [], "missing": [] },
+  "quick_replies": ["Book Plan A", "Make it cheaper", "More relaxed"], "destination_options": [],
+  "plan_a": { "id": "plan_a1", "kind": "A", "version": 1, "total_cost_inr": 46300, "items": ["…"], "validation": { "feasible": true, "feasibility": 0.88, "min_slack_min": 65, "budget_headroom_inr": 8700, "checks": [{"name":"budget","passed":true,"detail":"₹46,300 of ₹55,000"}], "solver":"ortools-cp-sat", "solve_ms": 412 }, "…": "…" },
+  "plan_b": { "id": "plan_b1", "kind": "B", "…": "…" }, "proposed_action": null }
+```
+Invalid chat: `{"message": ""}` → 422 `VALIDATION_ERROR`.
+
+**Book**
+```json
+POST /trips/trip_01/book  { "plan": "A", "approve": true, "idempotency_key": "book-trip01-9f3a1c" }
+→ { "status": "PENDING", "message": "3 confirmed, 1 pending hotel confirmation.",
+    "bookings": [ { "id":"bk_1","item_id":"it_a_f1","status":"CONFIRMED","supplier_ref":"SIM-F-7721","amount_inr":8600,"refundable":false,"trip_id":"trip_01","plan_id":"plan_a1","failure_reason":null,"updated_at":"2026-11-22T10:00:00+05:30" },
+                  { "id":"bk_4","item_id":"it_a_h1","status":"PENDING","supplier_ref":null,"amount_inr":16000,"refundable":true,"trip_id":"trip_01","plan_id":"plan_a1","failure_reason":null,"updated_at":"2026-11-22T10:00:01+05:30" } ] }
+```
+
+**Alert**
+```json
+{ "id":"al_7","trip_id":"trip_01","level":"ACTION_NEEDED","window":"T-3H","title":"Your flight is delayed 55 min",
+  "body":"Eravikulam entry (last entry 15:45) is now at risk. Plan B recovers it with a MIXED switch.",
+  "provenance":{"source":"Flight status feed (sim)","checked_at":"2026-12-05T04:40:00+05:30","is_simulated":true,"confidence":0.9},
+  "recommended_action":{"action":"SWITCH_PLAN","label":"Review switch","params":{"recommendation_id":"sw_2"}}, "state":"NEW","created_at":"2026-12-05T04:40:02+05:30" }
+```
+
+**Switch decision**
+```json
+POST /switch/sw_2/decision { "decision": "APPROVE", "approve_draft_ids": ["dr_1","dr_2","dr_3"], "idempotency_key": "sw2-approve-77ad21" }
+→ SwitchResult { "recommendation": { "state": "EXECUTED", "mode": "MIXED", "delta_cost_inr": 1800, "…": "…" }, "trip": {"active_plan":"A","…":"…"}, "plan_a": {"version": 2, "…": "…"}, "plan_b": {"version": 2, "…": "…"}, "bookings": ["…"], "drafts": ["… state SENT …"], "evidence_event_ids": ["ev_9","ev_10"] }
+```
+
+**Location + live**
+```json
+POST /trips/trip_01/location { "lat": 10.0261, "lng": 76.9170, "speed_kmh": 28, "ts": "2026-12-05T13:05:00+05:30" }
+→ { "trip_id":"trip_01","as_of":"2026-12-05T13:05:00+05:30","tracking_on":true,"location":{"name":"Route","lat":10.0261,"lng":76.917},
+    "next_commitment":{"item_id":"it_a_e1","title":"Eravikulam NP timed entry","arrive_by":"2026-12-05T15:45:00+05:30","eta_min":95,"slack_min":-10,"health":"RED"},
+    "reroute_options":[{"id":"ro_1","mode":"SHIFT_SLOT","title":"Move Eravikulam to Day 2, 09:00","eta_min":null,"slack_min":720,"delta_cost_inr":400,"note":"Rebooking fee ₹400","provenance":{"source":"TBO Sandbox (sim)","checked_at":"2026-12-05T13:05:00+05:30","is_simulated":true,"confidence":1},"action":{"action":"SWITCH_PLAN","label":"Switch","params":{}}}],
+    "geofence_prompt": null }
+```
+
+**Demo**
+```json
+POST /demo/inject?trip_id=trip_01 { "kind": "FLIGHT_DELAY", "params": { "minutes": 55 } }  →  { "signal_ids": ["sg_12"] }
+POST /demo/clock?trip_id=trip_01  { "window": "T-3H" }  →  { "window": "T-3H", "sim_now": "2026-12-05T04:40:00+05:30" }
+```
+
+**Where inputs are stored/transformed.** Chat text → `chat_messages`; extracted `TripIntent` → `trips.intent`; Plans → `plans.data` (JSONB, full `Plan`); booking outcomes → `bookings`; injected/observed signals → `signals`; every state change → `evidence_events`; locations are kept only as the last ping per trip in `sim_state` (privacy: no history), deleted on `/demo/reset`.
+
+### B6.6b More examples
+
+**Register / login**
+```json
+POST /auth/login { "email": "traveller@demo.wf", "password": "demo1234" }
+→ { "access_token": "eyJ…", "token_type": "bearer", "expires_in": 3600, "user": { "id": "usr_demo", "email": "traveller@demo.wf", "name": "Asha", "role": "TRAVELLER", "language": "en" } }
+```
+**Cost split (4 members, total ₹46,301 so rounding matters)**
+```json
+GET /trips/trip_g1/split?method=EQUAL → { "trip_id":"trip_g1","method":"EQUAL","total_inr":46301,"shares":[
+  {"member_id":"usr_g1","name":"A","share_inr":11576,"item_ids":[]},{"member_id":"usr_g2","name":"B","share_inr":11575,"item_ids":[]},
+  {"member_id":"usr_g3","name":"C","share_inr":11575,"item_ids":[]},{"member_id":"usr_g4","name":"D","share_inr":11575,"item_ids":[]}] }
+```
+(sum = 46,301 exactly; invalid example: shares that sum to 46,300 fail `test_split_sums_exactly`.)
+
+**Modify quote then approve**
+```json
+POST /bookings/bk_3/modify { "approve": false, "new_start": "2026-12-06T09:00:00+05:30" }
+→ 400 { "error": { "code": "APPROVAL_REQUIRED", "message": "Rebooking costs ₹400.", "details": { "fee_inr": 400, "new_price_inr": 1000, "available": true }, "request_id": "req_a1" } }
+POST /bookings/bk_3/modify { "approve": true, "idempotency_key": "mod-bk3-4c9e11", "new_start": "2026-12-06T09:00:00+05:30" } → Booking
+```
+**WhatsApp inbound (provider payload normalised by P2 to this internal shape before the agent)**
+```json
+{ "from": "+919800000000", "text": "yes switch", "ts": "2026-12-05T04:44:00+05:30", "provider_msg_id": "wamid.HBg…" }
+→ agent resolves pending recommendation sw_2 (age 4 min < 30) → asks "Confirm: switch to Plan B (+₹1,800, lose Mattupetty boating)? Reply YES SW2 to confirm." → only "YES SW2" executes.
+```
+**Offline manifest**
+```json
+{ "trip_id":"trip_01","version":7,"generated_at":"2026-12-04T20:00:00+05:30","expires_at":"2026-12-10T00:00:00+05:30",
+  "resources":[{"url":"/api/v1/trips/trip_01/offline-pack","kind":"ITINERARY","bytes":48211},{"url":"/api/v1/vouchers/bk_1.html","kind":"VOUCHER","bytes":5120}] }
+```
+
+## B7. "Connected to what" map
+
+Read each row left to right: screen/action → component (P1) → endpoint → route file → service (P2) → engine/agent call (P3) → tables → what displays the response.
+
+| # | User action / screen | Frontend component | Endpoint | Route → Service | Engine / agent call | Tables | Displayed by |
+|---|---|---|---|---|---|---|---|
+| 1 | Send chat message | `chat/ChatPanel` | `POST /chat` | `chat.py` → `trip_service.handle_chat` | `agent.graph.run_turn` → `engine.planner.build_plan_pair` (inventory from `suppliers.registry`) | `trips`, `plans`, `chat_messages`, `evidence_events` | `ChatPanel` bubbles, `itinerary/ItineraryPanel`, `PlanCompare` |
+| 2 | Open trip | `app/trips/[id]` | `GET /trips/{id}` | `trips.py` → `trip_service.get_detail` | `engine.slack.compute_slack` (cached) | `trips`, `plans`, `bookings`, `signals` | `HealthMeter`, `ItineraryTimeline`, `BookingList` |
+| 3 | Compare Plan A/B | `itinerary/PlanCompare` | (data from #2) | – | – | – | Diff chips, validation proof list |
+| 4 | Book plan | `bookings/BookDialog` | `POST /trips/{id}/book` | `booking.py` → `booking_service.book` | – (supplier adapter) | `bookings`, `evidence_events` | `BookingList` status chips, error toast for `PRICE_CHANGED` |
+| 5 | Slack Score live | `guardian/HealthMeter` | `GET /trips/{id}/slack` + SSE `slack.updated` | `trips.py` → `pulse_service` | `engine.slack.compute_slack` | `signals` | Gauge + 5 component bars |
+| 6 | Guardian feed | `guardian/GuardianFeed` | `GET /trips/{id}/alerts` + SSE `alert.created` | `alerts.py` → `pulse_service`, `pulse/checks.py` | – | `alerts`, `signals` | `AlertCard` by level |
+| 7 | Alert one-tap action | `guardian/AlertCard` | `POST /alerts/{id}/ack` | `alerts.py` → `pulse_service.ack` | – | `alerts`, `evidence_events` | Card state change |
+| 8 | Switch proposal | `switch/SwitchDecisionCard` | `GET /trips/{id}/switch` + SSE `switch.proposed` | `switch.py` → `switch_service.latest` | `engine.switch.evaluate` (run by Pulse) | `switch_recommendations` | A vs B comparison, lost items, delta cost |
+| 9 | Approve switch | `switch/SwitchDecisionCard` | `POST /switch/{id}/decision` | `switch.py` → `switch_service.execute` | `engine.planner.regenerate_plan_b` | `plans`, `bookings`, `switch_recommendations`, `courtesy_drafts`, `evidence_events` | Timeline refresh, toasts, SSE `plan.switched` |
+| 10 | Courtesy drafts | `drafts/DraftsDrawer` | `GET /trips/{id}/drafts`, `POST /drafts/{id}/decision` | `drafts.py` → `draft_service` | `agent.courtesy.draft_messages` (on proposal) | `courtesy_drafts` | Draft cards, WhatsApp-style preview |
+| 11 | Live reroute | `live/LiveMap`, `live/CommitmentList` | `POST /trips/{id}/location`, `GET /trips/{id}/live` | `live.py` → `live_service` | `engine.live.reroute` | `sim_state`, `signals` | Map, slack chips, `RerouteOptionCard` |
+| 12 | Evidence | `evidence/EvidenceTimeline` | `GET /trips/{id}/evidence` (+ `/print`) | `evidence.py` → `evidence_service` | `engine.evidence.build_pack` | `evidence_events`, `bookings` | Timeline + claim sections |
+| 13 | Vouchers | `bookings/VoucherList` | `GET /trips/{id}/vouchers` | `vouchers.py` → `booking_service` | – | `bookings` | Voucher cards |
+| 14 | Cancel booking | `bookings/CancelDialog` | `POST /bookings/{id}/cancel` | `booking.py` → `booking_service.cancel` | – | `bookings`, `evidence_events` | Status chip |
+| 15 | Demo panel | `demo/DemoPanel` | `/demo/*` | `demo.py` → `sim_service` → `pulse_service.run` | slack + switch | `signals`, `trips`, all | Everything via SSE |
+| 16 | Trips list | `app/trips` | `GET /trips` | `trips.py` | – | `trips` | Trip cards with health dot |
+| 17 | Advisor console | `app/advisor` | `GET /trips` (+ `/slack` each) | same | – | – | Table sorted by health |
+| 18 | Live updates | `hooks/useTripEvents` | `GET /trips/{id}/events` | `events.py` (Redis pub/sub or in-memory) | – | – | Invalidates TanStack queries |
+| 19 | Login / register | `auth/LoginForm` | `POST /auth/login`, `/auth/register`, `GET /auth/me` | `auth.py` → `security.py` | – | `users` | `useAuth`, route guard |
+| 20 | Notification settings | `app/settings` | `GET/PUT /me/preferences`, `POST /me/push-subscription` | `me.py` → `notification_service` | – | `notification_prefs`, `push_subscriptions` | Settings form |
+| 21 | Group create / join / prefs | `group/*` | endpoints 34–38 | `groups.py` → `group_service` | `engine.group.merge_preferences` | `groups`, `group_members`, `group_prefs` | Members list, conflicts panel |
+| 22 | Vote, split, regroup | `group/VotePanel`, `SplitTable`, `RegroupCard` | endpoints 39–41 | `groups.py` | `engine.group.split_cost`, `engine.group.regroup` | `votes` | Panels, SSE `vote.updated` |
+| 23 | Rank priorities / rebalance | `priorities/PriorityBoard` | `PUT /priorities`, `POST /rebalance` | `priorities.py` | `engine.timebank.rebalance` | `plans` | Preview diff, apply dialog |
+| 24 | Optionality | `bookings/OptionalityCard` | `GET /optionality` | `optionality.py` | `engine.optionality.report` | – | Flex vs saver table |
+| 25 | Responsible tab | `responsible/*` | `GET /responsible` | `responsible.py` | `engine.responsible.report` | – | CO₂ chart, alternatives |
+| 26 | Share, trusted contacts, safe check-in, SOS | `safety/*` | endpoints 46–50 | `share.py`, `safety.py` → timers in worker | – | `share_links`, `trusted_contacts`, `safe_checkins` | Safety panel, public `/share/[token]` |
+| 27 | Offline pack | `offline/OfflineManager`, `sw.js` | `GET /offline-manifest`, `/offline-pack` | `offline.py` | – | `plans`, `bookings` | Offline banner, cached views |
+| 28 | Advisor console | `advisor/*` | endpoints 53–55 | `advisor.py` | – | `advisor_notes`, `trips` | Table + read-only cockpit |
+| 29 | Modify booking | `bookings/ModifyDialog` | `POST /bookings/{id}/modify` | `booking.py` | – | `bookings` | Quote then result |
+| 30 | Voice input | `chat/VoiceButton` (`speech.ts`) | `POST /chat` (`input_mode=VOICE`) | `chat.py` | agent | – | Chat bubbles |
+| 31 | WhatsApp inbound | – (phone) | `POST /webhooks/whatsapp` | `webhooks.py` → `notification_service` | `agent.graph.run_turn` (WhatsApp mode) | `chat_messages` | Reply on WhatsApp |
+| 32 | Alert delivery | – | worker → `notify/*` | `pulse_service` | – | `alerts` | WhatsApp/push/email/in-app, `notification.sent` |
+| 33 | Signals transparency | `guardian/WhyThis` | `GET /trips/{id}/signals` | `trips.py` | – | `signals` | "Why am I seeing this?" popover |
+| 35 | Apply responsible alternative | `responsible/AlternativeCard` | `POST /trips/{id}/swap-item` | `responsible.py` → `trip_service.swap_item` | `engine.planner.swap_item` | `plans`, `bookings` | Preview diff → approve dialog |
+| 34 | Evidence PDF | `evidence/DownloadPdf` | `GET /trips/{id}/evidence/pdf` | `evidence.py` | `engine.evidence.build_pack` | `evidence_events` | File download |
+
+**Disconnected / future on purpose:** real payments, real ticket issuance, native apps, location history (none of these exist by design). Everything else in this map is built and acceptance-tested in B11.
+
+```
+chat ─▶ /chat ─▶ agent(Gemini|mock) ─▶ engine.planner(OR-Tools) ─▶ Plan A/B ─▶ DB ─▶ UI
+worker(beat) ─▶ providers(weather, OSRM, news, flights) ─▶ Signal ─▶ Pulse ─▶ slack ─▶ switch.evaluate ─▶ Alert + Recommendation + Drafts ─▶ SSE + WhatsApp/push/email
+approve ─▶ /switch/decision ─▶ supplier cancel/rebook (idempotent) ─▶ Plan A v2 + regenerate B ─▶ Evidence ─▶ UI
+WhatsApp reply ─▶ webhook(HMAC) ─▶ agent ─▶ two-step approval ─▶ same switch execution path
+```
+
+## B8. Phases, work allocation and dependency matrices
+
+### Phase plan (planned as ~6 weeks; keep the order, scale the durations)
+
+Each phase ends with a **gate**: merge to `main`, `make test golden` green, the listed acceptance items ticked in B11, a 15-minute team demo. No phase starts its feature work until the previous gate passes, except frontend work that runs on fixtures.
+
+| Phase | Window | Theme | P1 Frontend | P2 Backend | P3 Engine/agent/contracts | Gate (B11) |
+|---|---|---|---|---|---|---|
+| **0 Foundations** | Days 1–3 | Contracts first | Scaffold, tokens, UI kit, fixtures mode, auth pages | Compose, DB, Alembic, all routes on stub engine, auth skeleton | `models.py`, generated `types.ts`, fixtures for **every** endpoint, stubs, CI, contract tests | AC-01, 20 |
+| **1 Core slice** | Week 1 | Chat → plan → book | Plan workspace, proof list, book dialog, vouchers, cancel/modify dialogs | Chat service, booking (idempotent), supplier mock + TboLive spike, vouchers, modify/cancel quotes | CP-SAT planner + Plan B v1, agent (mock + Gemini), validator, inventory for Munnar | AC-02..06, 16 |
+| **2 Guardian** | Week 2 | Watch the trip | Cockpit, HealthMeter, GuardianFeed, SSE hook, settings (prefs) | Celery worker+beat, Journey Pulse, providers (Open-Meteo, OSRM, news, flight status), Local Pulse ingestion, notification prefs, in-app alerts | Slack Score, feasibility, Local Pulse classifier + rules, alert wording | AC-07, 08, 21, 22 |
+| **3 Twin Plans and recovery** | Week 3 | Defend and recover | Switch card, drafts drawer, priorities UI, live map, evidence + PDF, optionality card | Plan-B warm refresh job, switch execution, drafts + send, live service, evidence service + PDF | Switch Engine FULL+MIXED, Time Banking, Courtesy, Optionality, Live reroute, Evidence | AC-09..15, 23..25 (delete `stubs.py`) |
+| **4 People and channels** | Week 4 | Groups, advisors, notifications | Group UI (invite, prefs, vote, split, regroup), advisor console, notification settings | Auth hardening, groups, advisor + consent, push/email/WhatsApp outbound, audit log, rate limits | Group merge + split + regroup logic, per-audience alert logic | AC-26..31 |
+| **5 Reach and responsibility** | Week 5 | WhatsApp, Hinglish, offline, safety, green | i18n (en, hi), voice input, PWA + offline pack, SOS/share/safe check-in UI, responsible tab | WhatsApp inbound webhook, offline manifest/pack, share/safe-checkin/SOS + timers, responsible endpoint | Hinglish/hi templates, WhatsApp intent routing + two-step approval logic, responsible layer, multi-city planner, 4 more destinations | AC-32..38 |
+| **6 Hardening and delivery** | Week 6 | Make it unbreakable | A11y audit, responsive polish, empty/error audit, perf (bundle, LCP) | Security review, perf tuning, backup/restore, deploy configs, observability | LLM evals, load tests, e2e full suite, docs, demo script, video state script | AC-39..44 and all |
+
+### Work matrix
+
+| Feature / deliverable | Primary | Support | Files touched | Inputs | Outputs | Depends on | Acceptance | Integration point | Conflict risk |
+|---|---|---|---|---|---|---|---|---|---|
+| Contracts + fixtures + generated types | P3 | P1, P2 review | `contracts/*`, `scripts/gen_types.py` | this doc | `models.py`, `types.ts`, fixtures | – | AC-20 | tag `contracts-v1` | Low |
+| F1/F2 Chat + proof plans | P3 | P2 wiring, P1 UI | `agent/*`, `engine/planner.py`, `trip_service`, `chat/*` | `ChatRequest`, `Inventory` | `ChatResponse` | contracts | AC-02, 03, 17 | `POST /chat` | Med |
+| F3/F18 Booking, vouchers, modify, cancel | P2 | P1 UI | `booking_service`, `suppliers/*`, `bookings/*` | `BookRequest` etc. | `BookResult`, `Booking` | contracts | AC-04..06, 16 | `/trips/{id}/book` | Med |
+| F4/F13 Pulse, providers, Local Pulse | P2 | P3 classifier | `worker/*`, `pulse_service`, `providers/*`, `agent/localpulse_*` | signals | Alerts, SSE | slack | AC-07, 21, 22 | Celery tasks | Med |
+| F8 Slack Score + health meter | P3 | P1 UI, P2 call | `engine/slack.py`, `HealthMeter` | Plan + Signals | `SlackScore` | planner | AC-08 | `slack.updated` | **High** (tuned vs seed) |
+| F5/F6 Twin Plans + Switch | P3 | P2 execute, P1 card | `engine/switch.py`, `planb_service`, `switch_service`, `switch/*` | Plans, Signals | `SwitchRecommendation`, `SwitchResult` | slack | AC-09, 10, 12, 23 | `/switch/{id}/decision` | **High** |
+| F9 Time Banking + priorities | P3 | P1, P2 | `engine/timebank.py`, `priorities/*`, `priorities.py` | priorities | `RebalancePreview` | planner | AC-24 | `/rebalance` | Med |
+| F10 Courtesy | P3 | P2 send, P1 UI | `agent/courtesy.py`, `draft_service`, `drafts/*` | rec | `CourtesyDraft[]` | agent | AC-11, 31 | `draft.created` | Med |
+| F11 Evidence + PDF | P3 | P2, P1 | `engine/evidence.py`, `evidence_service`, `evidence/*` | events | `EvidencePack`, PDF | switch | AC-14 | `/evidence(/pdf)` | Low |
+| F12 Optionality | P3 | P1 | `engine/optionality.py`, `optionality.py`, card | Plan, signals | `OptionalityReport` | planner | AC-25 | `/optionality` | Low |
+| F7 Live reroute | P3 | P2, P1 | `engine/live.py`, `live_service`, `live/*`, `providers/eta_osrm.py` | `LocationPing` | `LiveStatus` | planner, ETA | AC-13 | `/location` | Med |
+| F14 WhatsApp, Hinglish, voice | P2 (channel) | P3 agent, P1 voice | `notify/whatsapp.py`, `webhooks.py`, `agent/i18n.py`, `speech.ts` | webhook payload | replies, alerts | agent | AC-31..34 | `/webhooks/whatsapp` | Med |
+| F15 Offline, SOS, share | P1 (PWA) | P2 | `pwa.ts`, `sw.js`, `offline.py`, `share.py`, `safety.py` | manifest | cached app, SOS | contracts | AC-35, 36 | `/offline-*`, `/share/*` | Med |
+| F16 Group | P3 (logic) | P2 API, P1 UI | `engine/group.py`, `groups.py`, `group/*` | prefs, votes | merged, split, regroup | auth | AC-28 | `/group*` | **High** |
+| F17 Responsible | P3 | P1 | `engine/responsible.py`, `responsible.py`, tab | Plan | `ResponsibleReport` | planner | AC-37 | `/responsible` | Low |
+| F19 Advisor | P2 | P1 | `advisor.py`, `advisor/*` | consent | rows, notes | auth | AC-29 | `/advisor/*` | Low |
+| F20/F21 Accounts, prefs, push, email | P2 | P1 | `security.py`, `notify/*`, `auth/*`, `settings/*` | prefs | delivery | – | AC-26, 27, 30 | `/auth`, `/me` | Med |
+| F22 Delivery | P3 | P2 | `.github`, `deploy/`, `tests/e2e`, `tests/load`, `docs/*` | – | CI, images, docs | all | AC-39..44 | – | Low |
+
+### Dependency matrix
+
+| Stream | Needs from P1 | Needs from P2 | Needs from P3 | Can start with |
+|---|---|---|---|---|
+| **P1** | – | Real endpoints per phase (fixtures until then); SSE shapes unchanged | `types.ts` + **all** fixtures at Phase 0 | Fixtures mode |
+| **P2** | Nothing | – | `models.py` at Phase 0; stubs at Phase 0; each engine/agent function at the phase listed above | Stub engine (`ENGINE_IMPL=stub`) |
+| **P3** | Stable `data-testid`s (for e2e) | Inventory loader + persisted shapes; real provider adapters for integration tests | – | Pure fixtures |
+
+## B9. Merge conflict prevention and integration procedure
+
+**Rules**
+1. **Ownership beats convenience.** Edit only files you own (B4). Need something elsewhere? Use the change request (CR).
+2. **Contract-first.** After tag `contracts-v1` (Phase 0), shapes change only through a CR. Types are generated, so a CR is a `models.py` edit + `make gen-types`.
+3. **Branches.** `main` (always runnable, protected), `feat/p1-*`, `feat/p2-*`, `feat/p3-*` (short-lived, one feature each), tags `contracts-vN` and `phase-N-done`. Worktrees: `git worktree add ../wf-p2 feat/p2-pulse`.
+4. **Pull requests.** Keep them under ~400 changed lines; one feature (`F#`) per PR; squash-merge; CI must pass (lint, unit, contract, golden); one teammate approves (contract or golden impact must be approved by P3).
+5. **Sync.** Rebase on `origin/main` at least daily and always before opening a PR: `git fetch && git rebase origin/main`.
+6. **Merge order inside a phase gate:** P3 (contracts/engine) → P2 (backend) → P1 (frontend) → P3 (e2e/docs). Next person rebases on the result.
+7. **Database migrations (Alembic)** are linear. Only P2 creates them; one migration per PR; if two heads appear, P2 merges them (`alembic merge`).
+8. **Never** commit `.env`, secrets, `node_modules`, `.venv`, DB dumps, large binaries. A `gitleaks` check runs in CI.
+9. **Formatting:** Python `ruff` (config P2), TypeScript `prettier` + `eslint` (config P1). CI enforces; no style debates.
+
+**Change request protocol.**
+1. Append to `docs/CHANGE_REQUESTS.md`: `CR-n | who | what changes (field/endpoint) | why | who must change code | urgency`. Post in chat.
+2. The other two reply 👍 or object within **4 working hours** (30 minutes if marked *blocking*; silence = 👍).
+3. P3 applies it in one commit: `models.py` + regenerated `types.ts` + affected fixtures + contract tests, bumps `CONTRACT_VERSION` (patch = additive optional field, minor = new endpoint/model, major = breaking, only at phase boundaries), merges, pings.
+4. Everyone rebases before using the new shape. **Nobody implements a changed shape before the CR is merged.**
+5. If your code no longer matches the contract: stop; conform or file a CR. `tests/contract` and Schemathesis in CI fail on drift.
+
+**Two people must edit one file.** The owner makes the edit (or accepts a commit authored by the requester on the owner's branch). Never both on the same lines in different branches. On a textual conflict the **file owner resolves**, keeps both intents, runs tests, and tells the other person.
+
+### Conflict matrix
+
+| File / area | Owner | Likely conflicting contributors | Prevention rule | Resolution |
+|---|---|---|---|---|
+| `contracts/*` | P3 | P1, P2 | Only P3 commits; CR protocol | P3 reconciles, bumps version |
+| `frontend/package.json`, lockfile | P1 | P3 | P3's e2e/load deps live in `tests/e2e/package.json` | P1 regenerates lockfile |
+| `frontend/src/i18n/*.json` | P1 | P3 (agent strings) | Agent templates live in `agent/i18n.py`; UI strings only in P1 files | P1 |
+| `frontend/public/sw.js` / PWA config | P1 | P2 (manifest content) | P2 only changes the manifest API, never the SW | P1 |
+| `backend/requirements.txt` | P2 | P3 | P3 deps only in `requirements-engine.txt` | P2 merges |
+| `requirements-engine.txt` | P3 | P2 | P2 asks via CR | P3 |
+| `backend/app/main.py` (router registration) | P2 | P3 | Routes self-contained; P3 asks for registration | P2 |
+| `backend/alembic/versions/*`, `models_db.py` | P2 | P3 | P3 never touches DB; needs a table → CR | P2 merges heads |
+| `docker-compose*.yml`, `deploy/*` | P2 | P3 (CI uses them) | P3 requests changes | P2 |
+| `.github/workflows/*`, `Makefile`, `.env.example` | P3 | P1, P2 | `.env.example` has per-person blocks (each edits only own); Makefile targets prefixed `p1-`/`p2-`/`p3-` except shared | Owner merges |
+| `frontend/src/app/layout.tsx`, `globals.css`, `tailwind.config.ts`, `styles/tokens.css` | P1 | none | Single owner | – |
+| `frontend/src/lib/api/*` | P1 | P3 (fixtures) | Fixtures live in `contracts/fixtures`, read-only for P1 | P1 |
+| `contracts/fixtures/inventory_*.json`, `golden_*.json` | P3 | P2 (seed) | P2 reads only; extra decoys in `backend/seed/` | P3 + P2 re-run golden |
+| `backend/seed/*` | P2 | P3 | P2 runs `make golden` before merging seed changes | P2 fixes or CR to P3 |
+| `engine/config.py` (tuning constants) | P3 | P2 | P2 asks for threshold tweaks | P3 |
+| `backend/app/notify/*` templates vs `agent/i18n.py` | P2 / P3 | each other | Message *content* is P3 (agent/i18n); *delivery* is P2 | owner of the layer |
+| `README.md`, `docs/*` | P3 | all | Others send text via chat/CR; may append only to `CHANGE_REQUESTS.md`, `AI_TOOLS_USED.md`, and their section in `SECURITY.md` | P3 |
+| `tests/e2e/*` | P3 | P1 (`data-testid`) | P1 keeps test ids from the P1 packet stable (renames need a CR) | P3 |
+
+## B10. Setup, seed data and run instructions
+
+**Prerequisites:** Node 20+, Python 3.11+, Docker.
+
+```bash
+cp .env.example .env              # defaults run fully offline (mock LLM, sim signals, mock supplier, sim notify)
+make db-up                        # postgres + redis (+ optional osrm profile)
+make install                      # backend deps, engine deps, npm ci (frontend, tests/e2e)
+make migrate                      # alembic upgrade head
+make seed                         # demo users, golden trip, 5 destinations of inventory
+make dev                          # api :8000, celery worker, celery beat, web :3000
+make test                         # engine, agent, backend unit + contract tests
+make golden                       # golden + secondary scenario tests (must stay green)
+make gen-types                    # regenerate contracts/types.ts from models.py
+make e2e                          # Playwright suites (needs make dev running)
+make load                         # load test
+make lint                         # ruff, eslint, prettier --check, gitleaks
+make up-prod                      # production-like compose (built images)
+make reset                        # POST /demo/reset
+```
+
+**Demo accounts (seeded):** `traveller@demo.wf / demo1234`, `advisor@demo.wf / demo1234`, group members `g1@demo.wf … g4@demo.wf / demo1234`.
+
+**Environment variables (`.env.example`, one block per person)**
+
+| Block | Variable | Default | Meaning |
+|---|---|---|---|
+| P1 | `NEXT_PUBLIC_API_BASE` | `http://localhost:8000/api/v1` | API base |
+| P1 | `NEXT_PUBLIC_API_MODE` | `live` | `live` or `fixtures` |
+| P1 | `NEXT_PUBLIC_DEMO_MODE` | `1` | Demo panel hotkey |
+| P1 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | empty | Web push |
+| P2 | `DATABASE_URL` | `postgresql+psycopg://wayfinder:wayfinder@localhost:5432/wayfinder` | DB |
+| P2 | `REDIS_URL` | `redis://localhost:6379/0` | Cache, pub/sub, Celery broker (required) |
+| P2 | `JWT_SECRET`, `JWT_TTL_MIN` | dev secret, `60` | Auth (prod must override; startup fails if default in prod) |
+| P2 | `DEMO_MODE` | `1` | Enables `/demo/*` |
+| P2 | `SUPPLIER` | `mock` | `mock`, `tbo_live`, `hybrid` |
+| P2 | `TBO_BASE_URL`, `TBO_USERNAME`, `TBO_PASSWORD`, `TBO_CLIENT_ID` | empty | Live adapter |
+| P2 | `SIGNAL_SOURCE` | `sim` | `sim`, `live`, `hybrid` |
+| P2 | `OSRM_URL` | `https://router.project-osrm.org` | ETA provider; self-host for reliability |
+| P2 | `FLIGHT_STATUS_PROVIDER`, `FLIGHT_STATUS_API_KEY` | empty | Real flight status |
+| P2 | `NEWS_FEEDS` | curated RSS list | Local Pulse sources |
+| P2 | `NOTIFY_MODE` | `sim` | `live` or `sim` |
+| P2 | `WHATSAPP_PROVIDER`, `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN` | empty | Meta Cloud API or Twilio |
+| P2 | `SMTP_URL`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | empty | Email, web push |
+| P2 | `PULSE_INTERVAL_SEC`, `PLANB_REFRESH_MIN` | `30`, `30` | Worker cadence |
+| P2 | `SUPPLIER_PRICE_DRIFT`, `SUPPLIER_FAIL_REBOOK` | empty, `0` | Failure injection (tests/demo) |
+| P3 | `LLM_MODE` | `mock` | `mock` or `gemini` |
+| P3 | `GEMINI_API_KEY`, `GEMINI_MODEL` | empty, `gemini-flash-latest` | Verify the model name for your key |
+| P3 | `ETA_PROVIDER` | `haversine` | `haversine` / `osrm` |
+| P3 | `ENGINE_GOLDEN_FALLBACK` | `0` | Demo insurance only; **off by default** |
+
+**Seed data.** `make seed` creates users, the golden trip `trip_golden` (PLANNED, unbooked), group trip `trip_g1` (4 members), 6 advisor client trips in mixed health, inventory for 5 destinations. `POST /demo/seed-trip` re-creates the golden trip; `POST /demo/reset` wipes and reseeds.
+
+### Cost: building and demoing everything for free
+
+The default configuration (`LLM_MODE=mock`, `SIGNAL_SOURCE=sim`, `NOTIFY_MODE=sim`, `SUPPLIER=mock`) needs **no money and no accounts**. Every paid or credential-gated service is an optional switch. Free-tier limits and terms change, so verify each at the time you switch it on.
+
+| Need | Free option used | Limits and notes |
+|---|---|---|
+| Core stack (Next.js, FastAPI, Postgres, Redis, Celery, OR-Tools, LangGraph, Playwright, k6, WeasyPrint) | Open source, runs in local Docker | Free |
+| LLM | `LLM_MODE=mock` (no network); optionally a Gemini API key from Google AI Studio | Free tier has rate and daily limits and its data-use terms can change; the product must pass the whole golden journey without it |
+| Weather | Open-Meteo | Free for non-commercial use, no key |
+| Routing / ETA | Public OSRM demo server, or self-hosted OSRM in Docker | Public server is fair-use only (no heavy load); self-hosting is free but needs a region extract and RAM. No live traffic either way (traffic jams stay simulated and labelled) |
+| Maps | MapLibre GL + a **PMTiles extract of OpenStreetMap data** (`scripts/make_pmtiles.sh`, `make maps`) | Free and offline-capable. **Do not prefetch tiles from tile.openstreetmap.org** (their policy forbids bulk/offline use). Show "© OpenStreetMap contributors". Pick the max zoom to keep the file small (about 12) and verify the size |
+| Local events | Public RSS feeds | Free; respect each site's terms and rate limits |
+| Flight status | Simulated by default | Real providers have small free tiers with tight request caps: use only for a rehearsed demo |
+| WhatsApp | Simulated outbox by default | Meta's test number or Twilio sandbox are free for testing with a few pre-registered recipients; real production sending needs business verification and can cost money |
+| Email | Simulated, or Gmail app-password SMTP / Mailtrap free | Free with sending limits |
+| Web push | VAPID keys, no provider | Free; needs HTTPS or localhost |
+| Voice input | Browser Web Speech API | Free, works mainly in Chromium browsers, audio is processed by the browser vendor's service; the button hides where unsupported |
+| TBO inventory | Credentials from the organisers | Normally provided for the event; otherwise mock |
+| Hosting | Local Docker, plus a free tunnel (e.g. Cloudflare Tunnel) for a public demo URL | Free. For always-on hosting the weak spot is the **Celery worker + beat + Redis**: free hosts often sleep or cap Redis commands, so treat a laptop demo as the safe default and an always-free VM as a bonus (availability varies) |
+| CI | GitHub Actions | Free for public repos; private repos have a monthly free allowance |
+| Not used | Google Maps/Routes (`ETA_PROVIDER=google`) | Paid and needs a card; only if you choose it |
+
+**Verification status.** Nothing in this document has been implemented or tested yet (only the contract models have been import-checked). Every check is a **planned check** until someone runs it and ticks it in B11.
+
+## B11. End-to-end acceptance checklist
+
+Tick only after running it. `[ ]` = planned check.
+
+| ID | Phase | Check | Pass when |
+|---|---|---|---|
+| AC-01 | 0 | Clean start | `make db-up migrate seed dev` → `/health` ok, `contract_version` matches, UI loads without console errors |
+| AC-02 | 1 | Chat → plan (mock LLM) | Golden request returns Plan A + B < 15s; every item shows price, source, freshness |
+| AC-03 | 1 | Clarify and validation | "plan a trip" → ≤2 follow-ups → PLANNED; empty message rejected with visible text; destination options shown when none given |
+| AC-04 | 1 | Book with approval | UI dialog; API refuses `approve=false` with `APPROVAL_REQUIRED` |
+| AC-05 | 1 | Honest booking states | CONFIRMED + PENDING shown; PENDING → CONFIRMED via SSE without refresh |
+| AC-06 | 1 | Idempotency and price change | Same key → same bookings, no DB duplicates; forced drift → `PRICE_CHANGED` dialog |
+| AC-07 | 2 | Pulse windows | Clock T-72h → T-24h → T-3h produce the B5 alerts with source+freshness in the right level; only ACTION_NEEDED/CRITICAL toast |
+| AC-08 | 2 | Slack Score | GREEN baseline, AMBER at `FLIGHT_DELAY 55`, RED at 120; five components; equals `/slack` |
+| AC-09 | 3 | Switch proposal | Arrives via SSE ≤5s; A 0.45–0.65, B ≥ 0.90, MIXED, delta ₹1,200–2,400, lost items with priority |
+| AC-10 | 3 | Approve switch | Kept bookings unchanged (same ids); changed ones cancelled/rebooked; Plan A v2; Plan B regenerated; never switches before approval |
+| AC-11 | 3 | Courtesy drafts | 3 drafts exist before the card is opened; edit works; approve → send via notification layer (SENT, labelled if sim) |
+| AC-12 | 3 | Failure safety | `SUPPLIER_FAIL_REBOOK=1` → 502, active plan unchanged, rec FAILED, UI recovery text |
+| AC-13 | 3 | Live reroute | Real OSRM ETA (or labelled fallback); `TRAFFIC_JAM 25` → ≥1 option with cost delta; tracking indicator accurate |
+| AC-14 | 3 | Evidence pack | Timeline with delay source, booking refs, ₹ extra cost, 3 claim sections (no eligibility asserted); print page and PDF match |
+| AC-15 | 3 | Demo panel | Hotkey `D`; clock, inject, drive, reset all work |
+| AC-16 | 1 | Post-booking | Chat answers from the Twin; vouchers only for CONFIRMED; modify and cancel show a quote then need approval |
+| AC-17 | 6 | Offline-LLM safety | Full golden journey with `LLM_MODE=mock`, `SIGNAL_SOURCE=sim`, no internet |
+| AC-18 | 6 | Accessibility | Keyboard-only path chat → book → switch approve; focus visible; alerts not colour-only; contrast ≥ 4.5:1; axe has no serious issues |
+| AC-19 | 6 | Responsive | 375/768/1280 px: no horizontal scroll; switch card and timeline usable |
+| AC-20 | 0 | Contract parity | Fixtures validate; `make gen-types` produces no diff; Schemathesis conforms |
+| AC-21 | 2 | Real providers | Weather call returns real data labelled real; OSRM ETA real; network off → labelled sim fallback, no crash |
+| AC-22 | 2 | Local Pulse | Sample "bandh" RSS item → signal with source + confidence; low confidence → INFO only; duplicates deduped |
+| AC-23 | 3 | Plan B warm | Worker re-checks Plan B prices/availability every `PLANB_REFRESH_MIN`; Plan B version updates; stale > 2× interval is flagged in UI |
+| AC-24 | 3 | Time Banking | Ranking Must/Nice/Skip persists; rebalance preview protects MUSTs, drops lowest value first; apply needs approval |
+| AC-25 | 3 | Optionality | Report marks high-risk legs, recommends FLEX only when expected loss > premium, totals with and without risk shown |
+| AC-26 | 4 | Auth | Register/login; 401 without token; 403 on another user's trip; login throttled; SSE token works |
+| AC-27 | 4 | Notification prefs | Quiet hours batch INFO/NUDGE; CRITICAL bypasses; sensitivity LOW suppresses NUDGE; channels respected |
+| AC-28 | 4 | Group | Invite code join; conflicts listed with resolutions; vote tally; split sums exactly; only affected members get an alert; only owner can book/approve |
+| AC-29 | 4 | Advisor | Dashboard sorted by health; read-only without consent; action without consent → `CONSENT_REQUIRED`; notes saved |
+| AC-30 | 4 | Push and email | Delivery (live or sim) with `notification.sent` events; failures retried with backoff, then marked failed |
+| AC-31 | 4 | WhatsApp outbound | Approved draft/alert sent (live) or outbox entry (sim) with right template and language |
+| AC-32 | 5 | WhatsApp inbound | Bad signature rejected; "status" answered from Twin; switch needs `YES SW<n>`; expires after 30 min; unknown number gets no data |
+| AC-33 | 5 | Hinglish/Hindi | UI language switch; drafts and alerts in Hinglish pass the guard (names, times unchanged) |
+| AC-34 | 5 | Voice | Voice input fills chat in supported browsers; clean fallback otherwise; Hinglish recognised acceptably on the eval set |
+| AC-35 | 5 | Offline | After pack download, with network off: itinerary, vouchers, Plan B, contacts load; app shell opens; offline banner shown |
+| AC-36 | 5 | SOS and sharing | SOS queues offline and sends on reconnect; missed check-in notifies contacts; share link exposes no PII, expires, revocable |
+| AC-37 | 5 | Responsible | CO₂ total and by mode; alternatives revalidated; method/version shown |
+| AC-38 | 5 | Multi-city and destinations | Kochi→Munnar→Alleppey plan valid with inter-city transfers; all 5 destinations plan without errors |
+| AC-39 | 6 | Security | No secrets in repo; authz matrix test passes; SQLi/XSS probes fail safely; HMAC webhooks; prod refuses default `JWT_SECRET`; dependency audit clean of high severity |
+| AC-40 | 6 | Performance | p95 < 300 ms for non-LLM endpoints at 50 concurrent users; chat < 15s (mock) / < 25s (Gemini); Pulse run < 2s; LCP < 2.5s on the plan page |
+| AC-41 | 6 | Reliability | Kill worker mid-Pulse → no duplicate alerts or bookings after restart; DB restore from backup works |
+| AC-42 | 6 | LLM evals | ≥ 90% intent accuracy on the golden prompt set; 0 guard violations across 200 generations |
+| AC-43 | 6 | Deployment | CI green; `make up-prod` or documented cloud deploy works from scratch |
+| AC-44 | 6 | API fuzz | Schemathesis run produces no 500s |
+
+**Done means:** every AC passes, or a deviation is written in `README.md` with the reason and an owner.
+
+## B12. Risks, open decisions and recommended defaults
+
+| Risk / open decision | Recommended default | Owner |
+|---|---|---|
+| TBO credentials may not arrive | Build `TboLiveAdapter` against the supplied docs with recorded responses in `suppliers/recorded/`; `SUPPLIER=hybrid` once creds exist; mock stays for tests and offline demo | P2 |
+| Public OSRM server rate-limits or goes down | Retry + 15-minute route cache; labelled haversine fallback; optional self-hosted OSRM compose profile | P2 |
+| Flight-status APIs are paid/limited | Provider is pluggable; simulated source stays labelled; real source used only if a key exists | P2 |
+| WhatsApp business onboarding is slow | Twilio sandbox first; sim outbox otherwise; identical code path | P2 |
+| Local-event classification false positives | Confidence threshold; low confidence → INFO only; every signal shows its source link; human-readable "why am I seeing this" (endpoint 57) | P3 |
+| Solver tuning vs seed drift | `make golden` green before any PR touching seed, `engine/config.py`, inventory; tuning only by P3 | P3 |
+| Group trust: who can spend money | Owner-only booking/approval; stated in UI and contract | all |
+| Privacy of location and share links | Latest point only; no PII in share view; tokens 128-bit, expiring, revocable; documented in `SECURITY.md` | P2 |
+| Gemini cost/latency/availability | Mock default; 8s timeout then fallback; cache identical prompts; guard everywhere | P3 |
+| PWA offline correctness | Versioned pack, stale-while-revalidate for app shell, explicit "offline" banner and last-sync time | P1 |
+| Scope creep with lots of time | Feature list is B2 F1–F22 only; new ideas go to a `docs/BACKLOG.md` and need a CR | team |
+| Map tile policy: public OSM tile servers forbid bulk/offline use | Self-hosted PMTiles extract rendered with MapLibre; attribution shown; no per-tile prefetch | P1, P3 |
+| Free-tier hosting cannot run Celery + Redis reliably | Local Docker is the demo default; always-on is optional; `docker-compose.prod.yml` stays portable | P2 |
+| Fourth teammate | Owns pitch, demo script, backup video, user testing sessions (5 people) | team |
+| Open: deployment target | Default: Docker compose locally + one cloud deploy (frontend on Vercel, API/worker on Render/Fly, Neon Postgres, Upstash Redis) | P2 |
+

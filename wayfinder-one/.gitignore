@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+node_modules/
+.next/
+*.pyc
+backups/
+frontend/public/maps/*.pmtiles
+.pytest_cache/
+.ruff_cache/
+.hypothesis/

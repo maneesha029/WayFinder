@@ -1,0 +1,17 @@
+# Owner: P2. Local development services. (Planned check: not yet run.)
+services:
+  postgres:
+    image: postgres:16
+    environment: { POSTGRES_USER: wayfinder, POSTGRES_PASSWORD: wayfinder, POSTGRES_DB: wayfinder }
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U wayfinder"], interval: 5s, retries: 10 }
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+    healthcheck: { test: ["CMD", "redis-cli", "ping"], interval: 5s, retries: 10 }
+  # Optional self-hosted OSRM (needs a prepared .osrm extract of South India; see docs/ARCHITECTURE.md)
+  # osrm:
+  #   image: osrm/osrm-backend
+  #   profiles: ["osrm"]
+volumes: { pgdata: {} }
