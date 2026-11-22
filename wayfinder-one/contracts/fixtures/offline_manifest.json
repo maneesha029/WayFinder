@@ -1,0 +1,23 @@
+{
+  "trip_id": "trip_golden",
+  "version": 7,
+  "generated_at": "2026-12-04T20:00:00+05:30",
+  "resources": [
+    {
+      "url": "/api/v1/trips/trip_golden/offline-pack",
+      "kind": "ITINERARY",
+      "bytes": 48211
+    },
+    {
+      "url": "/api/v1/vouchers/bk_1.html",
+      "kind": "VOUCHER",
+      "bytes": 5120
+    },
+    {
+      "url": "/maps/south-india.pmtiles",
+      "kind": "MAP",
+      "bytes": 12582912
+    }
+  ],
+  "expires_at": "2026-12-10T00:00:00+05:30"
+}

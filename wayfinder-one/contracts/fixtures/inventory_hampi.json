@@ -1,0 +1,282 @@
+{
+  "flights": [],
+  "hotels": [
+    {
+      "id": "hp_h1",
+      "type": "HOTEL",
+      "title": "Evolve Heritage Cottage, Hampi (3 nights)",
+      "place": {
+        "name": "Hampi Bazaar",
+        "lat": 15.335,
+        "lng": 76.46
+      },
+      "origin": null,
+      "price_inr": 12000,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 48,
+      "earliest_start": "2026-12-12T13:30:00+05:30",
+      "latest_end": "2026-12-12T20:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 300,
+      "hard_deadline": "2026-12-12T20:00:00+05:30",
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.6,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Hampi",
+      "tags": [
+        "hotel",
+        "heritage",
+        "local_owned"
+      ]
+    }
+  ],
+  "transfers": [
+    {
+      "id": "hp_t1",
+      "type": "TRANSFER",
+      "title": "Overnight Express / Cab Bengaluru → Hampi",
+      "place": {
+        "name": "Hampi Bazaar",
+        "lat": 15.335,
+        "lng": 76.46
+      },
+      "origin": {
+        "name": "Bengaluru Airport (BLR)",
+        "lat": 13.1986,
+        "lng": 77.7066
+      },
+      "price_inr": 3600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-12T08:00:00+05:30",
+      "latest_end": "2026-12-12T13:00:00+05:30",
+      "fixed_start": "2026-12-12T08:00:00+05:30",
+      "duration_min": 300,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.4,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Hampi",
+      "tags": [
+        "transfer",
+        "inbound"
+      ]
+    },
+    {
+      "id": "hp_t2",
+      "type": "TRANSFER",
+      "title": "Cab Hampi → Bengaluru",
+      "place": {
+        "name": "Bengaluru Airport (BLR)",
+        "lat": 13.1986,
+        "lng": 77.7066
+      },
+      "origin": {
+        "name": "Hampi Bazaar",
+        "lat": 15.335,
+        "lng": 76.46
+      },
+      "price_inr": 3600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-15T10:00:00+05:30",
+      "latest_end": "2026-12-15T15:30:00+05:30",
+      "fixed_start": "2026-12-15T10:00:00+05:30",
+      "duration_min": 330,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.4,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Hampi",
+      "tags": [
+        "transfer",
+        "outbound"
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": "hp_a1",
+      "type": "ACTIVITY",
+      "title": "Virupaksha Temple & Hampi Bazaar Guided Walk",
+      "place": {
+        "name": "Hampi Bazaar",
+        "lat": 15.335,
+        "lng": 76.46
+      },
+      "origin": null,
+      "price_inr": 1200,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-12T15:00:00+05:30",
+      "latest_end": "2026-12-12T17:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 150,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.8,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Hampi",
+      "tags": [
+        "heritage",
+        "eco"
+      ]
+    },
+    {
+      "id": "hp_a2",
+      "type": "ACTIVITY",
+      "title": "Vittala Temple Stone Chariot Tour",
+      "place": {
+        "name": "Vittala Temple Complex",
+        "lat": 15.3422,
+        "lng": 76.4754
+      },
+      "origin": null,
+      "price_inr": 1400,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": false,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-13T09:00:00+05:30",
+      "latest_end": "2026-12-13T12:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 180,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.9,
+      "risk_tags": [
+        "HEAT"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Hampi",
+      "tags": [
+        "heritage",
+        "architecture"
+      ]
+    },
+    {
+      "id": "hp_a3",
+      "type": "ACTIVITY",
+      "title": "Matanga Hill Sunset Viewpoint",
+      "place": {
+        "name": "Matanga Hill",
+        "lat": 15.3324,
+        "lng": 76.4648
+      },
+      "origin": null,
+      "price_inr": 600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-13T16:30:00+05:30",
+      "latest_end": "2026-12-13T18:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 120,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.7,
+      "risk_tags": [
+        "CROWD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Hampi",
+      "tags": [
+        "sunsets",
+        "viewpoint"
+      ]
+    },
+    {
+      "id": "hp_a4",
+      "type": "ACTIVITY",
+      "title": "Tungabhadra Coracle Ride & Craft Workshop",
+      "place": {
+        "name": "Sanapur Tungabhadra Coracle Ferry",
+        "lat": 15.349,
+        "lng": 76.447
+      },
+      "origin": null,
+      "price_inr": 900,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-14T10:00:00+05:30",
+      "latest_end": "2026-12-14T12:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 150,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.6,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Hampi",
+      "tags": [
+        "local_owned",
+        "offbeat",
+        "standby"
+      ]
+    }
+  ]
+}

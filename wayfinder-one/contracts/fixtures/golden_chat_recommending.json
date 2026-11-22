@@ -1,0 +1,48 @@
+{
+  "trip_id": "trip_draft_2",
+  "stage": "RECOMMENDING",
+  "assistant_message": "Here are 3 destinations matching your preferences. Munnar is ready with live prototype inventory.",
+  "intent": {
+    "origin": "Bengaluru",
+    "destination": null,
+    "start_date": "2026-12-05",
+    "nights": 4,
+    "travellers": 2,
+    "budget_inr": 55000,
+    "interests": [
+      "tea estates",
+      "waterfalls",
+      "sunsets"
+    ],
+    "constraints": [],
+    "pace": null,
+    "must_dos": [],
+    "missing": []
+  },
+  "quick_replies": [
+    "Plan Munnar"
+  ],
+  "destination_options": [
+    {
+      "name": "Munnar",
+      "why": "Tea estates, waterfalls, and cool December sunsets within ₹46,300.",
+      "est_budget_inr": 46300,
+      "available": true
+    },
+    {
+      "name": "Coorg",
+      "why": "Coffee estates and misty hills 6h from Bengaluru.",
+      "est_budget_inr": 38000,
+      "available": true
+    },
+    {
+      "name": "Wayanad",
+      "why": "Forest waterfalls and wildlife sanctuaries.",
+      "est_budget_inr": 42000,
+      "available": false
+    }
+  ],
+  "plan_a": null,
+  "plan_b": null,
+  "proposed_action": null
+}

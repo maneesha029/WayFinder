@@ -1,0 +1,15 @@
+{
+  "trip_id": "trip_golden",
+  "health": "RED",
+  "score": 33,
+  "components": {
+    "time_buffer": 0,
+    "delay_risk": 8,
+    "weather_risk": 100,
+    "crowd_risk": 85,
+    "budget_headroom": 79
+  },
+  "weakest_item_id": "it_a_e1",
+  "explanation": "Critical risk: Eravikulam NP timed entry is at -55 min effective slack after 120 min flight delay (8% link probability).",
+  "computed_at": "2026-12-05T04:45:00+05:30"
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "trip_id": "trip_adv_1",
+    "traveller_name": "Rohan Mehta",
+    "title": "Munnar Monsoon Escape",
+    "status": "ACTIVE",
+    "health": "RED",
+    "score": 34,
+    "next_risk": "Flight delayed 110 min; check-in cut-off",
+    "unread_alerts": 3,
+    "start_date": "2026-12-05",
+    "has_consent": true
+  },
+  {
+    "trip_id": "trip_golden",
+    "traveller_name": "Asha Rao",
+    "title": "Munnar Tea & Waterfalls (5 days)",
+    "status": "BOOKED",
+    "health": "AMBER",
+    "score": 53,
+    "next_risk": "Eravikulam timed entry (+10 min slack)",
+    "unread_alerts": 2,
+    "start_date": "2026-12-05",
+    "has_consent": true
+  },
+  {
+    "trip_id": "trip_adv_3",
+    "traveller_name": "Neha Kapoor",
+    "title": "Goa Family Retreat",
+    "status": "BOOKED",
+    "health": "AMBER",
+    "score": 64,
+    "next_risk": "Day 2 heavy rain outlook",
+    "unread_alerts": 1,
+    "start_date": "2026-12-12",
+    "has_consent": false
+  },
+  {
+    "trip_id": "trip_adv_4",
+    "traveller_name": "Karan Verma",
+    "title": "Hampi Heritage Weekend",
+    "status": "PLANNED",
+    "health": "GREEN",
+    "score": 88,
+    "next_risk": null,
+    "unread_alerts": 0,
+    "start_date": "2026-12-12",
+    "has_consent": false
+  },
+  {
+    "trip_id": "trip_adv_5",
+    "traveller_name": "Priya Nair",
+    "title": "Coorg Group Retreat",
+    "status": "BOOKED",
+    "health": "GREEN",
+    "score": 91,
+    "next_risk": null,
+    "unread_alerts": 0,
+    "start_date": "2026-12-12",
+    "has_consent": true
+  },
+  {
+    "trip_id": "trip_adv_6",
+    "traveller_name": "Vikram Joshi",
+    "title": "Kerala 3-City Circuit",
+    "status": "PLANNED",
+    "health": "GREEN",
+    "score": 93,
+    "next_risk": null,
+    "unread_alerts": 0,
+    "start_date": "2026-12-05",
+    "has_consent": true
+  }
+]

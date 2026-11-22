@@ -1,0 +1,17 @@
+{
+  "trip_id": "trip_g1",
+  "votes": {
+    "usr_g1": "A",
+    "usr_g2": "A",
+    "usr_g3": "B",
+    "usr_g4": "A"
+  },
+  "counts": {
+    "A": 3,
+    "B": 1,
+    "NEITHER": 0
+  },
+  "leader": "A",
+  "decided": true,
+  "rule": "Majority of members; owner breaks ties"
+}

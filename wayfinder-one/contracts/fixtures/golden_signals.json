@@ -1,0 +1,49 @@
+[
+  {
+    "signal": {
+      "id": "sg_10",
+      "trip_id": "trip_golden",
+      "kind": "WEATHER",
+      "item_id": "it_a_wf",
+      "severity": 1,
+      "summary": "Day 3 rain outlook moderate for Lakkam trek",
+      "payload": {
+        "day": 3,
+        "rain": "MODERATE"
+      },
+      "provenance": {
+        "source": "Open-Meteo (sim)",
+        "checked_at": "2026-12-02T07:40:00+05:30",
+        "is_simulated": true,
+        "confidence": 0.85
+      }
+    },
+    "used_in": [
+      "al_3"
+    ]
+  },
+  {
+    "signal": {
+      "id": "sg_12",
+      "trip_id": "trip_golden",
+      "kind": "FLIGHT_STATUS",
+      "item_id": "it_a_f1",
+      "severity": 2,
+      "summary": "Flight BLR→COK delayed by 55 min",
+      "payload": {
+        "delay_min": 55,
+        "flight_ref": "SIM-F-7721"
+      },
+      "provenance": {
+        "source": "Flight status feed (sim)",
+        "checked_at": "2026-12-05T04:40:00+05:30",
+        "is_simulated": true,
+        "confidence": 0.95
+      }
+    },
+    "used_in": [
+      "al_7",
+      "sw_2"
+    ]
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "trip_id": "trip_golden",
+  "total_co2_kg": 254.2,
+  "by_mode": {
+    "FLIGHT": 176.0,
+    "TRANSFER": 76.2,
+    "ACTIVITY": 2.0
+  },
+  "insights": [
+    {
+      "item_id": "it_a_t2",
+      "kind": "CO2",
+      "title": "Lower-emission return transfer available",
+      "detail": "Switch Cab Munnar → Kochi Airport to Shared EV Shuttle to save 32.6 kg CO₂ and ₹1,100.",
+      "alternative_offer_id": "off_eco_t1",
+      "co2_saving_kg": 32.6,
+      "delta_cost_inr": -1100
+    },
+    {
+      "item_id": "it_a_ts",
+      "kind": "CROWD_RELIEF",
+      "title": "Avoid peak sunset crowds at Top Station",
+      "detail": "Chithirapuram Quiet Ridge Sunset Walk offers an offbeat ridge view with lower crowd pressure and saves ₹500.",
+      "alternative_offer_id": "it_b_ec",
+      "co2_saving_kg": 1.8,
+      "delta_cost_inr": -500
+    },
+    {
+      "item_id": "it_a_h1",
+      "kind": "LOCAL_ECONOMY",
+      "title": "Locally owned stay included",
+      "detail": "Tea Valley Resort supports local Munnar hospitality.",
+      "alternative_offer_id": null,
+      "co2_saving_kg": null,
+      "delta_cost_inr": null
+    },
+    {
+      "item_id": "it_a_ts",
+      "kind": "ECO_HERITAGE",
+      "title": "Eco-heritage alternative available",
+      "detail": "Lockhart Tea Factory & Heritage Tour pairs low-impact indoor heritage with local ownership.",
+      "alternative_offer_id": "it_b_tf",
+      "co2_saving_kg": 2.1,
+      "delta_cost_inr": -300
+    }
+  ],
+  "method": "EMISSION_FACTORS_V1 (illustrative DEFRA/ICAO-aligned draft)"
+}

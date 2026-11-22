@@ -1,0 +1,15 @@
+{
+  "trip_id": "trip_golden",
+  "health": "GREEN",
+  "score": 94,
+  "components": {
+    "time_buffer": 100,
+    "delay_risk": 92,
+    "weather_risk": 100,
+    "crowd_risk": 85,
+    "budget_headroom": 79
+  },
+  "weakest_item_id": "it_a_e1",
+  "explanation": "Healthy buffer: tightest link is Eravikulam NP timed entry with +65 min slack (95% on-time probability).",
+  "computed_at": "2026-11-22T10:00:05+05:30"
+}

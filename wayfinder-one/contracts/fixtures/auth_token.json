@@ -1,0 +1,12 @@
+{
+  "access_token": "demo-fixture-jwt-token",
+  "token_type": "bearer",
+  "expires_in": 3600,
+  "user": {
+    "id": "usr_demo",
+    "email": "traveller@demo.wf",
+    "name": "Asha",
+    "role": "TRAVELLER",
+    "language": "en"
+  }
+}

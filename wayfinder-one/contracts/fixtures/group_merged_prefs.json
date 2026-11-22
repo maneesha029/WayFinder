@@ -1,0 +1,59 @@
+{
+  "merged_intent": {
+    "origin": "Bengaluru",
+    "destination": "Coorg",
+    "start_date": "2026-12-12",
+    "nights": 3,
+    "travellers": 4,
+    "budget_inr": 48000,
+    "interests": [
+      "coffee",
+      "waterfalls",
+      "adventure",
+      "sunsets"
+    ],
+    "constraints": [
+      "vegetarian",
+      "no night ghat driving"
+    ],
+    "pace": "RELAXED",
+    "must_dos": [
+      "Organic Coffee Estate & Vegetarian Sadhya"
+    ],
+    "missing": []
+  },
+  "conflicts": [
+    {
+      "field": "budget_inr",
+      "values": {
+        "usr_g1": 16000,
+        "usr_g2": 20000,
+        "usr_g3": 12000,
+        "usr_g4": 18000
+      },
+      "resolution": "Used minimum per-person budget ₹12,000 × 4 = ₹48,000 total so nobody is priced out."
+    },
+    {
+      "field": "constraints",
+      "values": {
+        "usr_g2": [
+          "vegetarian"
+        ],
+        "usr_g1": [
+          "no night ghat driving"
+        ]
+      },
+      "resolution": "Combined all hard constraints (union): vegetarian, no night ghat driving."
+    },
+    {
+      "field": "pace",
+      "values": {
+        "usr_g1": "BALANCED",
+        "usr_g2": "RELAXED",
+        "usr_g3": "PACKED",
+        "usr_g4": "BALANCED"
+      },
+      "resolution": "Selected most conservative pace: RELAXED."
+    }
+  ]
+}

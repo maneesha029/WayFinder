@@ -1,0 +1,36 @@
+{
+  "id": "trip_golden",
+  "title": "Munnar Tea & Waterfalls (5 days)",
+  "status": "BOOKED",
+  "intent": {
+    "origin": "Bengaluru",
+    "destination": "Munnar",
+    "start_date": "2026-12-05",
+    "nights": 4,
+    "travellers": 2,
+    "budget_inr": 55000,
+    "interests": [
+      "tea estates",
+      "waterfalls",
+      "sunsets"
+    ],
+    "constraints": [
+      "no night ghat driving"
+    ],
+    "pace": "BALANCED",
+    "must_dos": [
+      "Eravikulam NP timed entry"
+    ],
+    "missing": []
+  },
+  "active_plan": "A",
+  "plan_a_id": "plan_a1",
+  "plan_b_id": "plan_b1",
+  "sim_now": "2026-12-05T04:40:00+05:30",
+  "sim_window": "T-3H",
+  "owner_id": "usr_demo",
+  "group_id": null,
+  "advisor_id": null,
+  "advisor_consent": false,
+  "created_at": "2026-11-22T10:00:00+05:30"
+}

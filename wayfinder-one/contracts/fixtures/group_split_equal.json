@@ -1,0 +1,31 @@
+{
+  "trip_id": "trip_g1",
+  "method": "EQUAL",
+  "total_inr": 46301,
+  "shares": [
+    {
+      "member_id": "usr_g1",
+      "name": "Asha",
+      "share_inr": 11576,
+      "item_ids": []
+    },
+    {
+      "member_id": "usr_g2",
+      "name": "Bikram",
+      "share_inr": 11575,
+      "item_ids": []
+    },
+    {
+      "member_id": "usr_g3",
+      "name": "Charu",
+      "share_inr": 11575,
+      "item_ids": []
+    },
+    {
+      "member_id": "usr_g4",
+      "name": "Dev",
+      "share_inr": 11575,
+      "item_ids": []
+    }
+  ]
+}

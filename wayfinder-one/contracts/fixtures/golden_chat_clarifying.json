@@ -1,0 +1,32 @@
+{
+  "trip_id": "trip_draft_1",
+  "stage": "CLARIFYING",
+  "assistant_message": "I can help plan that! Where are you travelling from, and what is your approximate total budget in INR?",
+  "intent": {
+    "origin": null,
+    "destination": null,
+    "start_date": null,
+    "nights": null,
+    "travellers": null,
+    "budget_inr": null,
+    "interests": [],
+    "constraints": [],
+    "pace": null,
+    "must_dos": [],
+    "missing": [
+      "origin",
+      "budget_inr",
+      "nights",
+      "travellers",
+      "start_date"
+    ]
+  },
+  "quick_replies": [
+    "From Bengaluru, ₹55,000",
+    "From Mumbai, ₹70,000"
+  ],
+  "destination_options": [],
+  "plan_a": null,
+  "plan_b": null,
+  "proposed_action": null
+}

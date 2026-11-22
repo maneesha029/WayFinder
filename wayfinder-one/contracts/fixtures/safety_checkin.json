@@ -1,0 +1,7 @@
+{
+  "id": "sc_1",
+  "trip_id": "trip_golden",
+  "item_id": "it_a_h1",
+  "due_at": "2026-12-05T20:00:00+05:30",
+  "state": "PENDING"
+}

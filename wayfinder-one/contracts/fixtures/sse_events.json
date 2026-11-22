@@ -1,0 +1,514 @@
+[
+  {
+    "event": "sim.clock",
+    "data": {
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:40:00+05:30",
+      "data": {
+        "window": "T-3H",
+        "sim_now": "2026-12-05T04:40:00+05:30"
+      }
+    }
+  },
+  {
+    "event": "signal.created",
+    "data": {
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:40:01+05:30",
+      "data": {
+        "id": "sg_12",
+        "trip_id": "trip_golden",
+        "kind": "FLIGHT_STATUS",
+        "item_id": "it_a_f1",
+        "severity": 2,
+        "summary": "Flight BLR→COK delayed by 55 min",
+        "payload": {
+          "delay_min": 55,
+          "flight_ref": "SIM-F-7721"
+        },
+        "provenance": {
+          "source": "Flight status feed (sim)",
+          "checked_at": "2026-12-05T04:40:00+05:30",
+          "is_simulated": true,
+          "confidence": 0.95
+        }
+      }
+    }
+  },
+  {
+    "event": "slack.updated",
+    "data": {
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:40:02+05:30",
+      "data": {
+        "trip_id": "trip_golden",
+        "health": "AMBER",
+        "score": 53,
+        "components": {
+          "time_buffer": 17,
+          "delay_risk": 58,
+          "weather_risk": 100,
+          "crowd_risk": 85,
+          "budget_headroom": 79
+        },
+        "weakest_item_id": "it_a_e1",
+        "explanation": "Tight buffer: Eravikulam NP timed entry drops to +10 min effective slack after 55 min flight delay (60% link probability).",
+        "computed_at": "2026-12-05T04:40:02+05:30"
+      }
+    }
+  },
+  {
+    "event": "alert.created",
+    "data": {
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:40:02+05:30",
+      "data": {
+        "id": "al_7",
+        "trip_id": "trip_golden",
+        "level": "ACTION_NEEDED",
+        "window": "T-3H",
+        "title": "Your flight is delayed 55 min",
+        "body": "Eravikulam entry (last entry 15:45) is now at risk. Plan B recovers it with a MIXED switch (+₹1,800).",
+        "provenance": {
+          "source": "Flight status feed (sim)",
+          "checked_at": "2026-12-05T04:40:00+05:30",
+          "is_simulated": true,
+          "confidence": 0.95
+        },
+        "recommended_action": {
+          "action": "SWITCH_PLAN",
+          "label": "Review switch",
+          "params": {
+            "recommendation_id": "sw_2"
+          }
+        },
+        "state": "NEW",
+        "audience_user_ids": [],
+        "channels_sent": [],
+        "created_at": "2026-12-05T04:40:02+05:30"
+      }
+    }
+  },
+  {
+    "event": "draft.created",
+    "data": {
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:40:03+05:30",
+      "data": {
+        "id": "dr_1",
+        "trip_id": "trip_golden",
+        "recommendation_id": "sw_2",
+        "recipient_kind": "HOTEL",
+        "recipient_name": "Tea Valley Resort",
+        "channel": "EMAIL",
+        "language": "en",
+        "subject": "Updated arrival time — Ref SIM-H-101 (Tea Valley Resort)",
+        "body": "Hello Tea Valley Resort team, our flight BLR→COK is delayed by 55 min. Our revised check-in ETA is 16:00 on 05 Dec (well before 20:00 cut-off). Please keep our 4-night reservation active.",
+        "state": "DRAFT",
+        "created_at": "2026-12-05T04:40:03+05:30"
+      }
+    }
+  },
+  {
+    "event": "switch.proposed",
+    "data": {
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:40:03+05:30",
+      "data": {
+        "id": "sw_2",
+        "trip_id": "trip_golden",
+        "mode": "MIXED",
+        "reason": "Flight delay cuts Eravikulam slack to +10 min. MIXED keeps Days 3–5 from Plan A and moves Eravikulam to Day 2 morning.",
+        "feasibility_a": 0.58,
+        "feasibility_b": 0.96,
+        "slack_a_min": 10,
+        "slack_b_min": 70,
+        "delta_cost_inr": 1800,
+        "lost_items": [
+          {
+            "item_id": "it_a_mb",
+            "title": "Mattupetty Dam boating",
+            "priority": "NICE"
+          }
+        ],
+        "kept_booking_item_ids": [
+          "it_a_f1",
+          "it_a_h1",
+          "it_a_t2",
+          "it_a_f2"
+        ],
+        "changed_booking_item_ids": [
+          "it_a_t1",
+          "it_a_e1"
+        ],
+        "resulting_plan": {
+          "id": "plan_a2",
+          "trip_id": "trip_golden",
+          "kind": "A",
+          "version": 2,
+          "items": [
+            {
+              "id": "it_a_f1",
+              "type": "FLIGHT",
+              "title": "Flight BLR→COK (sim)",
+              "day": 1,
+              "start": "2026-12-05T07:40:00+05:30",
+              "end": "2026-12-05T09:05:00+05:30",
+              "origin": {
+                "name": "Bengaluru Airport (BLR)",
+                "lat": 13.1986,
+                "lng": 77.7066
+              },
+              "place": {
+                "name": "Kochi Airport (COK)",
+                "lat": 10.152,
+                "lng": 76.4019
+              },
+              "price_inr": 8600,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": false,
+              "cancel_by": null,
+              "priority": "MUST",
+              "fixed": true,
+              "hard_deadline": null,
+              "depends_on": [],
+              "risk_tags": [],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": null,
+              "booking": null
+            },
+            {
+              "id": "it_b_t1",
+              "type": "TRANSFER",
+              "title": "Cab Kochi Airport → Munnar (Late Buffer)",
+              "day": 1,
+              "start": "2026-12-05T11:30:00+05:30",
+              "end": "2026-12-05T16:00:00+05:30",
+              "origin": {
+                "name": "Kochi Airport (COK)",
+                "lat": 10.152,
+                "lng": 76.4019
+              },
+              "place": {
+                "name": "Munnar",
+                "lat": 10.0889,
+                "lng": 77.0595
+              },
+              "price_inr": 4300,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": true,
+              "cancel_by": "2026-12-04T11:30:00+05:30",
+              "priority": "MUST",
+              "fixed": false,
+              "hard_deadline": null,
+              "depends_on": [
+                "it_a_f1"
+              ],
+              "risk_tags": [
+                "GHAT_ROAD"
+              ],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": 0,
+              "booking": null
+            },
+            {
+              "id": "it_a_h1",
+              "type": "HOTEL",
+              "title": "Tea Valley Resort, 4 nights",
+              "day": 1,
+              "start": "2026-12-05T14:30:00+05:30",
+              "end": "2026-12-05T20:00:00+05:30",
+              "origin": null,
+              "place": {
+                "name": "Tea Valley Resort, Munnar",
+                "lat": 10.087,
+                "lng": 77.062
+              },
+              "price_inr": 16000,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": true,
+              "cancel_by": "2026-12-03T18:00:00+05:30",
+              "priority": "MUST",
+              "fixed": false,
+              "hard_deadline": "2026-12-05T20:00:00+05:30",
+              "depends_on": [
+                "it_b_t1"
+              ],
+              "risk_tags": [],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": null,
+              "booking": null
+            },
+            {
+              "id": "it_b_e1",
+              "type": "ACTIVITY",
+              "title": "Eravikulam NP timed entry",
+              "day": 2,
+              "start": "2026-12-06T09:00:00+05:30",
+              "end": "2026-12-06T11:00:00+05:30",
+              "origin": null,
+              "place": {
+                "name": "Eravikulam National Park",
+                "lat": 10.1667,
+                "lng": 77.05
+              },
+              "price_inr": 1000,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": true,
+              "cancel_by": "2026-12-05T21:00:00+05:30",
+              "priority": "MUST",
+              "fixed": true,
+              "hard_deadline": "2026-12-06T11:45:00+05:30",
+              "depends_on": [],
+              "risk_tags": [],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": 0,
+              "booking": null
+            },
+            {
+              "id": "it_b_tm",
+              "type": "ACTIVITY",
+              "title": "Tea Museum",
+              "day": 2,
+              "start": "2026-12-06T14:00:00+05:30",
+              "end": "2026-12-06T15:30:00+05:30",
+              "origin": null,
+              "place": {
+                "name": "Tea Museum, Munnar",
+                "lat": 10.0866,
+                "lng": 77.0586
+              },
+              "price_inr": 400,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": true,
+              "cancel_by": null,
+              "priority": "NICE",
+              "fixed": false,
+              "hard_deadline": null,
+              "depends_on": [],
+              "risk_tags": [],
+              "indoor": true,
+              "co2_kg": null,
+              "rebook_fee_inr": null,
+              "booking": null
+            },
+            {
+              "id": "it_a_wf",
+              "type": "ACTIVITY",
+              "title": "Lakkam waterfall guided trek",
+              "day": 3,
+              "start": "2026-12-07T08:30:00+05:30",
+              "end": "2026-12-07T13:00:00+05:30",
+              "origin": null,
+              "place": {
+                "name": "Lakkam Waterfalls",
+                "lat": 10.097,
+                "lng": 77.148
+              },
+              "price_inr": 1600,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": false,
+              "cancel_by": null,
+              "priority": "MUST",
+              "fixed": false,
+              "hard_deadline": null,
+              "depends_on": [],
+              "risk_tags": [
+                "RAIN"
+              ],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": null,
+              "booking": null
+            },
+            {
+              "id": "it_a_ts",
+              "type": "ACTIVITY",
+              "title": "Top Station sunset point (jeep)",
+              "day": 4,
+              "start": "2026-12-08T16:00:00+05:30",
+              "end": "2026-12-08T19:00:00+05:30",
+              "origin": null,
+              "place": {
+                "name": "Top Station",
+                "lat": 10.1209,
+                "lng": 77.2339
+              },
+              "price_inr": 1400,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": false,
+              "cancel_by": null,
+              "priority": "NICE",
+              "fixed": false,
+              "hard_deadline": null,
+              "depends_on": [],
+              "risk_tags": [
+                "RAIN",
+                "CROWD"
+              ],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": null,
+              "booking": null
+            },
+            {
+              "id": "it_a_t2",
+              "type": "TRANSFER",
+              "title": "Cab Munnar → Kochi Airport",
+              "day": 5,
+              "start": "2026-12-09T10:00:00+05:30",
+              "end": "2026-12-09T14:30:00+05:30",
+              "origin": {
+                "name": "Munnar",
+                "lat": 10.0889,
+                "lng": 77.0595
+              },
+              "place": {
+                "name": "Kochi Airport (COK)",
+                "lat": 10.152,
+                "lng": 76.4019
+              },
+              "price_inr": 4300,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": true,
+              "cancel_by": "2026-12-08T10:00:00+05:30",
+              "priority": "MUST",
+              "fixed": false,
+              "hard_deadline": null,
+              "depends_on": [],
+              "risk_tags": [
+                "GHAT_ROAD"
+              ],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": null,
+              "booking": null
+            },
+            {
+              "id": "it_a_f2",
+              "type": "FLIGHT",
+              "title": "Flight COK→BLR (sim)",
+              "day": 5,
+              "start": "2026-12-09T17:35:00+05:30",
+              "end": "2026-12-09T19:00:00+05:30",
+              "origin": {
+                "name": "Kochi Airport (COK)",
+                "lat": 10.152,
+                "lng": 76.4019
+              },
+              "place": {
+                "name": "Bengaluru Airport (BLR)",
+                "lat": 13.1986,
+                "lng": 77.7066
+              },
+              "price_inr": 7800,
+              "price_provenance": {
+                "source": "TBO Sandbox (sim)",
+                "checked_at": "2026-11-22T10:00:00+05:30",
+                "is_simulated": true,
+                "confidence": 1.0
+              },
+              "refundable": false,
+              "cancel_by": null,
+              "priority": "MUST",
+              "fixed": true,
+              "hard_deadline": null,
+              "depends_on": [
+                "it_a_t2"
+              ],
+              "risk_tags": [],
+              "indoor": false,
+              "co2_kg": null,
+              "rebook_fee_inr": null,
+              "booking": null
+            }
+          ],
+          "total_cost_inr": 45400,
+          "validation": {
+            "feasible": true,
+            "checks": [
+              {
+                "name": "budget",
+                "passed": true,
+                "detail": "₹45,400 of ₹55,000"
+              },
+              {
+                "name": "no_night_ghat",
+                "passed": true,
+                "detail": "Both ghat transfers end before 18:00"
+              }
+            ],
+            "min_slack_min": 70,
+            "budget_headroom_inr": 9600,
+            "feasibility": 0.96,
+            "solver": "ortools-cp-sat",
+            "solve_ms": 110
+          },
+          "summary": "MIXED recovery plan: afternoon/Day 2 from Plan B, rest of Plan A preserved.",
+          "created_at": "2026-12-05T04:40:02+05:30",
+          "superseded": false
+        },
+        "sources": [
+          {
+            "source": "Flight status feed (sim)",
+            "checked_at": "2026-12-05T04:40:00+05:30",
+            "is_simulated": true,
+            "confidence": 0.95
+          },
+          {
+            "source": "TBO Sandbox (sim)",
+            "checked_at": "2026-11-22T10:00:00+05:30",
+            "is_simulated": true,
+            "confidence": 1.0
+          }
+        ],
+        "state": "PROPOSED",
+        "created_at": "2026-12-05T04:40:02+05:30"
+      }
+    }
+  }
+]

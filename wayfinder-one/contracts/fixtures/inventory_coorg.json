@@ -1,0 +1,327 @@
+{
+  "flights": [],
+  "hotels": [
+    {
+      "id": "cg_h1",
+      "type": "HOTEL",
+      "title": "Coorg Wilderness Homestay (3 nights)",
+      "place": {
+        "name": "Madikeri, Coorg",
+        "lat": 12.4244,
+        "lng": 75.7382
+      },
+      "origin": null,
+      "price_inr": 18000,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 48,
+      "earliest_start": "2026-12-12T13:00:00+05:30",
+      "latest_end": "2026-12-12T20:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 300,
+      "hard_deadline": "2026-12-12T20:00:00+05:30",
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.7,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "hotel",
+        "local_owned",
+        "vegetarian_friendly"
+      ]
+    }
+  ],
+  "transfers": [
+    {
+      "id": "cg_t1",
+      "type": "TRANSFER",
+      "title": "SUV Bengaluru → Coorg",
+      "place": {
+        "name": "Madikeri, Coorg",
+        "lat": 12.4244,
+        "lng": 75.7382
+      },
+      "origin": {
+        "name": "Bengaluru Airport (BLR)",
+        "lat": 13.1986,
+        "lng": 77.7066
+      },
+      "price_inr": 6800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 24,
+      "earliest_start": "2026-12-12T08:00:00+05:30",
+      "latest_end": "2026-12-12T13:30:00+05:30",
+      "fixed_start": "2026-12-12T08:00:00+05:30",
+      "duration_min": 330,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [
+        "GHAT_ROAD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "transfer",
+        "inbound"
+      ]
+    },
+    {
+      "id": "cg_t2",
+      "type": "TRANSFER",
+      "title": "SUV Coorg → Bengaluru",
+      "place": {
+        "name": "Bengaluru Airport (BLR)",
+        "lat": 13.1986,
+        "lng": 77.7066
+      },
+      "origin": {
+        "name": "Madikeri, Coorg",
+        "lat": 12.4244,
+        "lng": 75.7382
+      },
+      "price_inr": 6800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 24,
+      "earliest_start": "2026-12-15T10:00:00+05:30",
+      "latest_end": "2026-12-15T15:30:00+05:30",
+      "fixed_start": "2026-12-15T10:00:00+05:30",
+      "duration_min": 330,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [
+        "GHAT_ROAD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "transfer",
+        "outbound"
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": "cg_a1",
+      "type": "ACTIVITY",
+      "title": "Abbey Falls Nature Walk",
+      "place": {
+        "name": "Abbey Falls, Coorg",
+        "lat": 12.4586,
+        "lng": 75.7168
+      },
+      "origin": null,
+      "price_inr": 1200,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": false,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-12T15:00:00+05:30",
+      "latest_end": "2026-12-12T17:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 120,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.6,
+      "risk_tags": [
+        "RAIN"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "waterfalls",
+        "nature"
+      ]
+    },
+    {
+      "id": "cg_a2",
+      "type": "ACTIVITY",
+      "title": "Organic Coffee Estate & Vegetarian Sadhya",
+      "place": {
+        "name": "Mercara Coffee Estate, Coorg",
+        "lat": 12.408,
+        "lng": 75.722
+      },
+      "origin": null,
+      "price_inr": 2400,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 24,
+      "earliest_start": "2026-12-13T09:30:00+05:30",
+      "latest_end": "2026-12-13T12:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 180,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.8,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "coffee",
+        "local_owned",
+        "vegetarian",
+        "indoor"
+      ]
+    },
+    {
+      "id": "cg_a3",
+      "type": "ACTIVITY",
+      "title": "Barapole White-Water Rafting",
+      "place": {
+        "name": "Dubare Camp, Coorg",
+        "lat": 12.3712,
+        "lng": 75.9016
+      },
+      "origin": null,
+      "price_inr": 3600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": false,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-13T14:00:00+05:30",
+      "latest_end": "2026-12-13T17:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 180,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.7,
+      "risk_tags": [
+        "RAIN"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "adventure",
+        "waterfalls"
+      ]
+    },
+    {
+      "id": "cg_a4",
+      "type": "ACTIVITY",
+      "title": "Raja's Seat Sunset Point",
+      "place": {
+        "name": "Raja's Seat, Madikeri",
+        "lat": 12.4158,
+        "lng": 75.7366
+      },
+      "origin": null,
+      "price_inr": 800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-14T16:30:00+05:30",
+      "latest_end": "2026-12-14T18:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 120,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.5,
+      "risk_tags": [
+        "CROWD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "sunsets",
+        "viewpoint"
+      ]
+    },
+    {
+      "id": "cg_a5",
+      "type": "ACTIVITY",
+      "title": "Madikeri Fort & Heritage Gallery",
+      "place": {
+        "name": "Madikeri Fort Museum",
+        "lat": 12.421,
+        "lng": 75.738
+      },
+      "origin": null,
+      "price_inr": 600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-14T10:30:00+05:30",
+      "latest_end": "2026-12-14T12:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 120,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.4,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Coorg",
+      "tags": [
+        "heritage",
+        "indoor",
+        "standby"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "dr_1",
+    "trip_id": "trip_golden",
+    "recommendation_id": "sw_2",
+    "recipient_kind": "HOTEL",
+    "recipient_name": "Tea Valley Resort",
+    "channel": "EMAIL",
+    "language": "en",
+    "subject": "Updated arrival time — Ref SIM-H-101 (Tea Valley Resort)",
+    "body": "Hello Tea Valley Resort team, our flight BLR→COK is delayed by 55 min. Our revised check-in ETA is 16:00 on 05 Dec (well before 20:00 cut-off). Please keep our 4-night reservation active.",
+    "state": "DRAFT",
+    "created_at": "2026-12-05T04:40:03+05:30"
+  },
+  {
+    "id": "dr_2",
+    "trip_id": "trip_golden",
+    "recommendation_id": "sw_2",
+    "recipient_kind": "DRIVER",
+    "recipient_name": "Munnar Cab Service",
+    "channel": "WHATSAPP",
+    "language": "en",
+    "subject": null,
+    "body": "Hi, flight BLR→COK is delayed 55 min. Please shift pickup at Kochi Airport (COK) from 09:50 to 11:30 on 05 Dec (arrival Munnar 16:00). Wait/reschedule fee ₹1,400 noted.",
+    "state": "DRAFT",
+    "created_at": "2026-12-05T04:40:03+05:30"
+  },
+  {
+    "id": "dr_3",
+    "trip_id": "trip_golden",
+    "recommendation_id": "sw_2",
+    "recipient_kind": "VENDOR",
+    "recipient_name": "Eravikulam NP Ticketing",
+    "channel": "WHATSAPP",
+    "language": "en",
+    "subject": null,
+    "body": "Requesting slot move for booking SIM-E-9012 from 05 Dec 15:00 to 06 Dec 09:00 due to 55 min flight delay. Rebooking fee ₹400 approved.",
+    "state": "DRAFT",
+    "created_at": "2026-12-05T04:40:03+05:30"
+  }
+]

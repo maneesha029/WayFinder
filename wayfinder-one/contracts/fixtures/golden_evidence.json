@@ -1,0 +1,89 @@
+{
+  "trip_id": "trip_golden",
+  "generated_at": "2026-12-05T05:00:00+05:30",
+  "events": [
+    {
+      "id": "ev_1",
+      "trip_id": "trip_golden",
+      "ts": "2026-11-22T10:05:00+05:30",
+      "kind": "BOOKING",
+      "source": "TBO Sandbox (sim)",
+      "detail": "Booked Plan A (3 confirmed: bk_1, bk_2, bk_3; 1 pending: bk_4).",
+      "ref": {
+        "booking_ids": [
+          "bk_1",
+          "bk_2",
+          "bk_3",
+          "bk_4"
+        ]
+      }
+    },
+    {
+      "id": "ev_6",
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:40:00+05:30",
+      "kind": "SIGNAL",
+      "source": "Flight status feed (sim)",
+      "detail": "Flight BLR→COK delayed by 55 min (new ETA 10:00).",
+      "ref": {
+        "signal_id": "sg_12",
+        "delay_min": 55
+      }
+    },
+    {
+      "id": "ev_9",
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:42:00+05:30",
+      "kind": "SWITCH",
+      "source": "Wayfinder Switch Engine",
+      "detail": "Executed MIXED switch sw_2: Eravikulam moved to Day 2 09:00; kept flights & hotel.",
+      "ref": {
+        "recommendation_id": "sw_2",
+        "mode": "MIXED"
+      }
+    },
+    {
+      "id": "ev_10",
+      "trip_id": "trip_golden",
+      "ts": "2026-12-05T04:42:05+05:30",
+      "kind": "COST",
+      "source": "TBO Sandbox (sim)",
+      "detail": "Reschedule costs recorded: ₹400 Eravikulam slot rebook + ₹1,400 cab driver wait.",
+      "ref": {
+        "amount_inr": 1800
+      }
+    }
+  ],
+  "total_delay_min": 55,
+  "extra_cost_inr": 1800,
+  "claim_sections": [
+    {
+      "type": "AIRLINE",
+      "summary": "Recorded 55 min inbound delay on Flight BLR→COK (SIM-F-7721) at 2026-12-05T04:40:00+05:30 from Flight status feed (sim). Compensation or waiver eligibility depends on the operating airline's fare rules and carrier policy.",
+      "amount_inr": null,
+      "attachments": [
+        "bk_1",
+        "sg_12"
+      ]
+    },
+    {
+      "type": "INSURANCE",
+      "summary": "Documented ₹1,800 in downstream trip interruption/rescheduling expenses caused by the 55 min inbound flight delay.",
+      "amount_inr": 1800,
+      "attachments": [
+        "bk_2",
+        "bk_3",
+        "sg_12"
+      ]
+    },
+    {
+      "type": "SUPPLIER",
+      "summary": "Supplier modification ledger: Cab wait fee ₹1,400 (bk_2) and Eravikulam rebooking fee ₹400 (bk_3); ₹0 non-refundable loss on Mattupetty boating.",
+      "amount_inr": 1800,
+      "attachments": [
+        "bk_2",
+        "bk_3"
+      ]
+    }
+  ]
+}

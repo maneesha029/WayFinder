@@ -1,0 +1,20 @@
+[
+  {
+    "booking_id": "bk_1",
+    "title": "Flight BLR→COK (sim)",
+    "reference": "SIM-F-7721",
+    "html_url": "/api/v1/vouchers/bk_1.html"
+  },
+  {
+    "booking_id": "bk_2",
+    "title": "Cab Kochi Airport → Munnar",
+    "reference": "SIM-C-4102",
+    "html_url": "/api/v1/vouchers/bk_2.html"
+  },
+  {
+    "booking_id": "bk_3",
+    "title": "Eravikulam NP timed entry",
+    "reference": "SIM-E-9012",
+    "html_url": "/api/v1/vouchers/bk_3.html"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "trip_id": "trip_golden",
+  "lines": [
+    {
+      "item_id": "it_a_t1",
+      "disruption_prob": 0.12,
+      "expected_loss_inr": 516,
+      "flex_premium_inr": 500,
+      "recommended": "FLEX",
+      "reason": "Disruption probability 12% gives expected loss ₹516 > flex premium ₹500."
+    },
+    {
+      "item_id": "it_a_e1",
+      "disruption_prob": 0.32,
+      "expected_loss_inr": 320,
+      "flex_premium_inr": 250,
+      "recommended": "FLEX",
+      "reason": "Disruption probability 32% gives expected loss ₹320 > flex premium ₹250."
+    },
+    {
+      "item_id": "it_a_t2",
+      "disruption_prob": 0.08,
+      "expected_loss_inr": 344,
+      "flex_premium_inr": 400,
+      "recommended": "SAVER",
+      "reason": "Disruption probability 8% gives expected loss ₹344 <= flex premium ₹400."
+    }
+  ],
+  "total_saver_inr": 9600,
+  "total_saver_with_risk_inr": 10780,
+  "total_flex_inr": 10694,
+  "recommendation": "Choose FLEX on Cab COK→Munnar and Eravikulam NP: expected risk-adjusted total is ₹10,694 vs ₹10,780 saver-with-risk."
+}

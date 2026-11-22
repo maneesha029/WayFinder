@@ -1,0 +1,77 @@
+[
+  {
+    "id": "al_7",
+    "trip_id": "trip_golden",
+    "level": "ACTION_NEEDED",
+    "window": "T-3H",
+    "title": "Your flight is delayed 55 min",
+    "body": "Eravikulam entry (last entry 15:45) is now at risk. Plan B recovers it with a MIXED switch (+₹1,800).",
+    "provenance": {
+      "source": "Flight status feed (sim)",
+      "checked_at": "2026-12-05T04:40:00+05:30",
+      "is_simulated": true,
+      "confidence": 0.95
+    },
+    "recommended_action": {
+      "action": "SWITCH_PLAN",
+      "label": "Review switch",
+      "params": {
+        "recommendation_id": "sw_2"
+      }
+    },
+    "state": "NEW",
+    "audience_user_ids": [],
+    "channels_sent": [],
+    "created_at": "2026-12-05T04:40:02+05:30"
+  },
+  {
+    "id": "al_5",
+    "trip_id": "trip_golden",
+    "level": "NUDGE",
+    "window": "T-24H",
+    "title": "Web check-in is open",
+    "body": "Check in for Flight BLR→COK (07:40 departure).",
+    "provenance": {
+      "source": "Flight status feed (sim)",
+      "checked_at": "2026-12-05T04:40:00+05:30",
+      "is_simulated": true,
+      "confidence": 0.95
+    },
+    "recommended_action": {
+      "action": "CHECK_IN",
+      "label": "Web check-in",
+      "params": {
+        "item_id": "it_a_f1"
+      }
+    },
+    "state": "SEEN",
+    "audience_user_ids": [],
+    "channels_sent": [],
+    "created_at": "2026-12-04T07:40:00+05:30"
+  },
+  {
+    "id": "al_3",
+    "trip_id": "trip_golden",
+    "level": "NUDGE",
+    "window": "T-72H",
+    "title": "Day 3 rain outlook — Plan B is ready",
+    "body": "Moderate rain forecast on Day 3 (Lakkam waterfall trek). Rain-safe Spice plantation standby is warmed.",
+    "provenance": {
+      "source": "Open-Meteo (sim)",
+      "checked_at": "2026-12-02T07:40:00+05:30",
+      "is_simulated": true,
+      "confidence": 0.85
+    },
+    "recommended_action": {
+      "action": "VIEW",
+      "label": "Compare Plan B",
+      "params": {
+        "plan": "B"
+      }
+    },
+    "state": "SEEN",
+    "audience_user_ids": [],
+    "channels_sent": [],
+    "created_at": "2026-12-02T07:40:00+05:30"
+  }
+]

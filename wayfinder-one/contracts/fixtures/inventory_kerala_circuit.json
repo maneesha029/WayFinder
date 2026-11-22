@@ -1,0 +1,722 @@
+{
+  "flights": [
+    {
+      "id": "kc_f1",
+      "type": "FLIGHT",
+      "title": "Flight BLR→COK (sim)",
+      "place": {
+        "name": "Kochi Airport (COK)",
+        "lat": 10.152,
+        "lng": 76.4019
+      },
+      "origin": {
+        "name": "Bengaluru Airport (BLR)",
+        "lat": 13.1986,
+        "lng": 77.7066
+      },
+      "price_inr": 8600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": false,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-05T07:40:00+05:30",
+      "latest_end": "2026-12-05T09:05:00+05:30",
+      "fixed_start": "2026-12-05T07:40:00+05:30",
+      "duration_min": 85,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Kochi",
+      "tags": [
+        "flight",
+        "inbound"
+      ]
+    },
+    {
+      "id": "kc_f2",
+      "type": "FLIGHT",
+      "title": "Flight COK→BLR (sim)",
+      "place": {
+        "name": "Bengaluru Airport (BLR)",
+        "lat": 13.1986,
+        "lng": 77.7066
+      },
+      "origin": {
+        "name": "Kochi Airport (COK)",
+        "lat": 10.152,
+        "lng": 76.4019
+      },
+      "price_inr": 7800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": false,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-11T17:35:00+05:30",
+      "latest_end": "2026-12-11T19:00:00+05:30",
+      "fixed_start": "2026-12-11T17:35:00+05:30",
+      "duration_min": 85,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Kochi",
+      "tags": [
+        "flight",
+        "outbound"
+      ]
+    }
+  ],
+  "hotels": [
+    {
+      "id": "kc_h_kochi",
+      "type": "HOTEL",
+      "title": "Fort Kochi Heritage Inn (1 night)",
+      "place": {
+        "name": "Fort Kochi",
+        "lat": 9.9658,
+        "lng": 76.2421
+      },
+      "origin": null,
+      "price_inr": 4500,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 48,
+      "earliest_start": "2026-12-05T13:00:00+05:30",
+      "latest_end": "2026-12-05T20:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 240,
+      "hard_deadline": "2026-12-05T20:00:00+05:30",
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.6,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Kochi",
+      "tags": [
+        "hotel",
+        "heritage"
+      ]
+    },
+    {
+      "id": "kc_h_munnar",
+      "type": "HOTEL",
+      "title": "Tea Valley Resort Munnar (3 nights)",
+      "place": {
+        "name": "Tea Valley Resort, Munnar",
+        "lat": 10.087,
+        "lng": 77.062
+      },
+      "origin": null,
+      "price_inr": 12000,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 48,
+      "earliest_start": "2026-12-06T14:00:00+05:30",
+      "latest_end": "2026-12-06T20:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 240,
+      "hard_deadline": "2026-12-06T20:00:00+05:30",
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.6,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Munnar",
+      "tags": [
+        "hotel",
+        "tea estates"
+      ]
+    },
+    {
+      "id": "kc_h_alleppey",
+      "type": "HOTEL",
+      "title": "Alleppey Eco Backwater Stay (2 nights)",
+      "place": {
+        "name": "Alleppey Backwaters",
+        "lat": 9.4981,
+        "lng": 76.3388
+      },
+      "origin": null,
+      "price_inr": 9000,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": 48,
+      "earliest_start": "2026-12-09T14:00:00+05:30",
+      "latest_end": "2026-12-09T20:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 240,
+      "hard_deadline": "2026-12-09T20:00:00+05:30",
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.7,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Alleppey",
+      "tags": [
+        "hotel",
+        "eco"
+      ]
+    }
+  ],
+  "transfers": [
+    {
+      "id": "kc_t_air_kochi",
+      "type": "TRANSFER",
+      "title": "Cab COK Airport → Fort Kochi",
+      "place": {
+        "name": "Fort Kochi",
+        "lat": 9.9658,
+        "lng": 76.2421
+      },
+      "origin": {
+        "name": "Kochi Airport (COK)",
+        "lat": 10.152,
+        "lng": 76.4019
+      },
+      "price_inr": 1400,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-05T09:45:00+05:30",
+      "latest_end": "2026-12-05T11:15:00+05:30",
+      "fixed_start": null,
+      "duration_min": 90,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Kochi",
+      "tags": [
+        "transfer",
+        "intercity"
+      ]
+    },
+    {
+      "id": "kc_t_kochi_munnar",
+      "type": "TRANSFER",
+      "title": "Cab Kochi → Munnar",
+      "place": {
+        "name": "Munnar",
+        "lat": 10.0889,
+        "lng": 77.0595
+      },
+      "origin": {
+        "name": "Fort Kochi",
+        "lat": 9.9658,
+        "lng": 76.2421
+      },
+      "price_inr": 4300,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-06T09:00:00+05:30",
+      "latest_end": "2026-12-06T13:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 270,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [
+        "GHAT_ROAD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Munnar",
+      "tags": [
+        "transfer",
+        "intercity"
+      ]
+    },
+    {
+      "id": "kc_t_kochi_munnar_b",
+      "type": "TRANSFER",
+      "title": "Morning Express Bus Kochi → Munnar",
+      "place": {
+        "name": "Munnar",
+        "lat": 10.0889,
+        "lng": 77.0595
+      },
+      "origin": {
+        "name": "Fort Kochi",
+        "lat": 9.9658,
+        "lng": 76.2421
+      },
+      "price_inr": 1800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-06T10:30:00+05:30",
+      "latest_end": "2026-12-06T15:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 300,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.2,
+      "risk_tags": [
+        "GHAT_ROAD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Munnar",
+      "tags": [
+        "transfer",
+        "intercity",
+        "standby",
+        "eco"
+      ]
+    },
+    {
+      "id": "kc_t_munnar_all",
+      "type": "TRANSFER",
+      "title": "Cab Munnar → Alleppey",
+      "place": {
+        "name": "Alleppey Backwaters",
+        "lat": 9.4981,
+        "lng": 76.3388
+      },
+      "origin": {
+        "name": "Munnar",
+        "lat": 10.0889,
+        "lng": 77.0595
+      },
+      "price_inr": 4800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-09T09:00:00+05:30",
+      "latest_end": "2026-12-09T14:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 300,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [
+        "GHAT_ROAD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Alleppey",
+      "tags": [
+        "transfer",
+        "intercity"
+      ]
+    },
+    {
+      "id": "kc_t_all_air",
+      "type": "TRANSFER",
+      "title": "Cab Alleppey → COK Airport",
+      "place": {
+        "name": "Kochi Airport (COK)",
+        "lat": 10.152,
+        "lng": 76.4019
+      },
+      "origin": {
+        "name": "Alleppey Backwaters",
+        "lat": 9.4981,
+        "lng": 76.3388
+      },
+      "price_inr": 2600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-11T12:00:00+05:30",
+      "latest_end": "2026-12-11T14:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 150,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.5,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Alleppey",
+      "tags": [
+        "transfer",
+        "outbound"
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": "kc_a_k1",
+      "type": "ACTIVITY",
+      "title": "Fort Kochi Chinese Fishing Nets Sunset",
+      "place": {
+        "name": "Fort Kochi",
+        "lat": 9.9658,
+        "lng": 76.2421
+      },
+      "origin": null,
+      "price_inr": 800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-05T16:00:00+05:30",
+      "latest_end": "2026-12-05T18:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 150,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.7,
+      "risk_tags": [
+        "CROWD"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Kochi",
+      "tags": [
+        "sunsets",
+        "heritage"
+      ]
+    },
+    {
+      "id": "kc_a_k2",
+      "type": "ACTIVITY",
+      "title": "Mattancherry Spice Warehouse Tour",
+      "place": {
+        "name": "Fort Kochi",
+        "lat": 9.9658,
+        "lng": 76.2421
+      },
+      "origin": null,
+      "price_inr": 700,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-05T14:00:00+05:30",
+      "latest_end": "2026-12-05T15:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 90,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.5,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Kochi",
+      "tags": [
+        "heritage",
+        "indoor",
+        "standby"
+      ]
+    },
+    {
+      "id": "kc_a_m1",
+      "type": "ACTIVITY",
+      "title": "Eravikulam NP & Tea Valley Walk",
+      "place": {
+        "name": "Eravikulam National Park",
+        "lat": 10.1667,
+        "lng": 77.05
+      },
+      "origin": null,
+      "price_inr": 1000,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": false,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-07T09:00:00+05:30",
+      "latest_end": "2026-12-07T12:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 180,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.9,
+      "risk_tags": [
+        "RAIN"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Munnar",
+      "tags": [
+        "tea estates",
+        "nature"
+      ]
+    },
+    {
+      "id": "kc_a_m2",
+      "type": "ACTIVITY",
+      "title": "Lakkam Waterfall Trek",
+      "place": {
+        "name": "Lakkam Waterfalls",
+        "lat": 10.097,
+        "lng": 77.148
+      },
+      "origin": null,
+      "price_inr": 1400,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": false,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-08T09:00:00+05:30",
+      "latest_end": "2026-12-08T13:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 240,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.7,
+      "risk_tags": [
+        "RAIN"
+      ],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Munnar",
+      "tags": [
+        "waterfalls",
+        "trek"
+      ]
+    },
+    {
+      "id": "kc_a_m3",
+      "type": "ACTIVITY",
+      "title": "Munnar Tea Museum & Factory",
+      "place": {
+        "name": "Tea Museum, Munnar",
+        "lat": 10.0866,
+        "lng": 77.0586
+      },
+      "origin": null,
+      "price_inr": 600,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-07T14:30:00+05:30",
+      "latest_end": "2026-12-07T16:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 120,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.5,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Munnar",
+      "tags": [
+        "tea estates",
+        "indoor",
+        "standby"
+      ]
+    },
+    {
+      "id": "kc_a_m4",
+      "type": "ACTIVITY",
+      "title": "Spice Garden Culinary Workshop",
+      "place": {
+        "name": "Kalladanthy Spice Garden, Munnar",
+        "lat": 10.062,
+        "lng": 77.041
+      },
+      "origin": null,
+      "price_inr": 1100,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-08T10:00:00+05:30",
+      "latest_end": "2026-12-08T13:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 180,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.6,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Munnar",
+      "tags": [
+        "local_owned",
+        "indoor",
+        "standby"
+      ]
+    },
+    {
+      "id": "kc_a_a1",
+      "type": "ACTIVITY",
+      "title": "Vembanad Backwater Shikara Cruise",
+      "place": {
+        "name": "Alleppey Backwaters",
+        "lat": 9.4981,
+        "lng": 76.3388
+      },
+      "origin": null,
+      "price_inr": 1800,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-10T09:00:00+05:30",
+      "latest_end": "2026-12-10T12:30:00+05:30",
+      "fixed_start": null,
+      "duration_min": 210,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "MUST",
+      "rating": 4.8,
+      "risk_tags": [],
+      "indoor": false,
+      "co2_kg": null,
+      "destination": "Alleppey",
+      "tags": [
+        "backwaters",
+        "eco"
+      ]
+    },
+    {
+      "id": "kc_a_a2",
+      "type": "ACTIVITY",
+      "title": "Kuttanad Village Coir & Canoe Experience",
+      "place": {
+        "name": "Alleppey Backwaters",
+        "lat": 9.4981,
+        "lng": 76.3388
+      },
+      "origin": null,
+      "price_inr": 1200,
+      "price_provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "refundable": true,
+      "cancel_hours_before": null,
+      "earliest_start": "2026-12-10T14:30:00+05:30",
+      "latest_end": "2026-12-10T17:00:00+05:30",
+      "fixed_start": null,
+      "duration_min": 150,
+      "hard_deadline": null,
+      "rebook_fee_inr": null,
+      "flex_premium_inr": null,
+      "priority_hint": "NICE",
+      "rating": 4.6,
+      "risk_tags": [],
+      "indoor": true,
+      "co2_kg": null,
+      "destination": "Alleppey",
+      "tags": [
+        "local_owned",
+        "eco",
+        "standby"
+      ]
+    }
+  ]
+}

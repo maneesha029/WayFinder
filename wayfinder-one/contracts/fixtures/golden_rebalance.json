@@ -1,0 +1,406 @@
+{
+  "plan_preview": {
+    "id": "plan_a1",
+    "trip_id": "trip_golden",
+    "kind": "A",
+    "version": 2,
+    "items": [
+      {
+        "id": "it_a_f1",
+        "type": "FLIGHT",
+        "title": "Flight BLR→COK (sim)",
+        "day": 1,
+        "start": "2026-12-05T07:40:00+05:30",
+        "end": "2026-12-05T09:05:00+05:30",
+        "origin": {
+          "name": "Bengaluru Airport (BLR)",
+          "lat": 13.1986,
+          "lng": 77.7066
+        },
+        "place": {
+          "name": "Kochi Airport (COK)",
+          "lat": 10.152,
+          "lng": 76.4019
+        },
+        "price_inr": 8600,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": false,
+        "cancel_by": null,
+        "priority": "MUST",
+        "fixed": true,
+        "hard_deadline": null,
+        "depends_on": [],
+        "risk_tags": [],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      },
+      {
+        "id": "it_a_t1",
+        "type": "TRANSFER",
+        "title": "Cab Kochi Airport → Munnar",
+        "day": 1,
+        "start": "2026-12-05T09:50:00+05:30",
+        "end": "2026-12-05T14:20:00+05:30",
+        "origin": {
+          "name": "Kochi Airport (COK)",
+          "lat": 10.152,
+          "lng": 76.4019
+        },
+        "place": {
+          "name": "Munnar",
+          "lat": 10.0889,
+          "lng": 77.0595
+        },
+        "price_inr": 4300,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": true,
+        "cancel_by": "2026-12-04T09:50:00+05:30",
+        "priority": "MUST",
+        "fixed": false,
+        "hard_deadline": null,
+        "depends_on": [
+          "it_a_f1"
+        ],
+        "risk_tags": [
+          "GHAT_ROAD"
+        ],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": 1400,
+        "booking": null
+      },
+      {
+        "id": "it_a_e1",
+        "type": "ACTIVITY",
+        "title": "Eravikulam NP timed entry",
+        "day": 1,
+        "start": "2026-12-05T15:00:00+05:30",
+        "end": "2026-12-05T17:00:00+05:30",
+        "origin": null,
+        "place": {
+          "name": "Eravikulam National Park",
+          "lat": 10.1667,
+          "lng": 77.05
+        },
+        "price_inr": 1000,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": false,
+        "cancel_by": null,
+        "priority": "MUST",
+        "fixed": true,
+        "hard_deadline": "2026-12-05T15:45:00+05:30",
+        "depends_on": [
+          "it_a_t1"
+        ],
+        "risk_tags": [
+          "RAIN"
+        ],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": 400,
+        "booking": null
+      },
+      {
+        "id": "it_a_h1",
+        "type": "HOTEL",
+        "title": "Tea Valley Resort, 4 nights",
+        "day": 1,
+        "start": "2026-12-05T14:30:00+05:30",
+        "end": "2026-12-05T20:00:00+05:30",
+        "origin": null,
+        "place": {
+          "name": "Tea Valley Resort, Munnar",
+          "lat": 10.087,
+          "lng": 77.062
+        },
+        "price_inr": 16000,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": true,
+        "cancel_by": "2026-12-03T18:00:00+05:30",
+        "priority": "MUST",
+        "fixed": false,
+        "hard_deadline": "2026-12-05T20:00:00+05:30",
+        "depends_on": [
+          "it_a_t1"
+        ],
+        "risk_tags": [],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      },
+      {
+        "id": "it_a_tm",
+        "type": "ACTIVITY",
+        "title": "Tea Museum",
+        "day": 2,
+        "start": "2026-12-06T10:00:00+05:30",
+        "end": "2026-12-06T11:30:00+05:30",
+        "origin": null,
+        "place": {
+          "name": "Tea Museum, Munnar",
+          "lat": 10.0866,
+          "lng": 77.0586
+        },
+        "price_inr": 400,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": false,
+        "cancel_by": null,
+        "priority": "NICE",
+        "fixed": false,
+        "hard_deadline": null,
+        "depends_on": [],
+        "risk_tags": [],
+        "indoor": true,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      },
+      {
+        "id": "it_a_mb",
+        "type": "ACTIVITY",
+        "title": "Mattupetty Dam boating",
+        "day": 2,
+        "start": "2026-12-06T13:30:00+05:30",
+        "end": "2026-12-06T15:00:00+05:30",
+        "origin": null,
+        "place": {
+          "name": "Mattupetty Dam",
+          "lat": 10.1065,
+          "lng": 77.1241
+        },
+        "price_inr": 900,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": false,
+        "cancel_by": null,
+        "priority": "NICE",
+        "fixed": false,
+        "hard_deadline": null,
+        "depends_on": [],
+        "risk_tags": [],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      },
+      {
+        "id": "it_a_wf",
+        "type": "ACTIVITY",
+        "title": "Lakkam waterfall guided trek",
+        "day": 3,
+        "start": "2026-12-07T08:30:00+05:30",
+        "end": "2026-12-07T13:00:00+05:30",
+        "origin": null,
+        "place": {
+          "name": "Lakkam Waterfalls",
+          "lat": 10.097,
+          "lng": 77.148
+        },
+        "price_inr": 1600,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": false,
+        "cancel_by": null,
+        "priority": "MUST",
+        "fixed": false,
+        "hard_deadline": null,
+        "depends_on": [],
+        "risk_tags": [
+          "RAIN"
+        ],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      },
+      {
+        "id": "it_a_ts",
+        "type": "ACTIVITY",
+        "title": "Top Station sunset point (jeep)",
+        "day": 4,
+        "start": "2026-12-08T16:00:00+05:30",
+        "end": "2026-12-08T19:00:00+05:30",
+        "origin": null,
+        "place": {
+          "name": "Top Station",
+          "lat": 10.1209,
+          "lng": 77.2339
+        },
+        "price_inr": 1400,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": false,
+        "cancel_by": null,
+        "priority": "NICE",
+        "fixed": false,
+        "hard_deadline": null,
+        "depends_on": [],
+        "risk_tags": [
+          "RAIN",
+          "CROWD"
+        ],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      },
+      {
+        "id": "it_a_t2",
+        "type": "TRANSFER",
+        "title": "Cab Munnar → Kochi Airport",
+        "day": 5,
+        "start": "2026-12-09T10:00:00+05:30",
+        "end": "2026-12-09T14:30:00+05:30",
+        "origin": {
+          "name": "Munnar",
+          "lat": 10.0889,
+          "lng": 77.0595
+        },
+        "place": {
+          "name": "Kochi Airport (COK)",
+          "lat": 10.152,
+          "lng": 76.4019
+        },
+        "price_inr": 4300,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": true,
+        "cancel_by": "2026-12-08T10:00:00+05:30",
+        "priority": "MUST",
+        "fixed": false,
+        "hard_deadline": null,
+        "depends_on": [],
+        "risk_tags": [
+          "GHAT_ROAD"
+        ],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      },
+      {
+        "id": "it_a_f2",
+        "type": "FLIGHT",
+        "title": "Flight COK→BLR (sim)",
+        "day": 5,
+        "start": "2026-12-09T17:35:00+05:30",
+        "end": "2026-12-09T19:00:00+05:30",
+        "origin": {
+          "name": "Kochi Airport (COK)",
+          "lat": 10.152,
+          "lng": 76.4019
+        },
+        "place": {
+          "name": "Bengaluru Airport (BLR)",
+          "lat": 13.1986,
+          "lng": 77.7066
+        },
+        "price_inr": 7800,
+        "price_provenance": {
+          "source": "TBO Sandbox (sim)",
+          "checked_at": "2026-11-22T10:00:00+05:30",
+          "is_simulated": true,
+          "confidence": 1.0
+        },
+        "refundable": false,
+        "cancel_by": null,
+        "priority": "MUST",
+        "fixed": true,
+        "hard_deadline": null,
+        "depends_on": [
+          "it_a_t2"
+        ],
+        "risk_tags": [],
+        "indoor": false,
+        "co2_kg": null,
+        "rebook_fee_inr": null,
+        "booking": null
+      }
+    ],
+    "total_cost_inr": 46300,
+    "validation": {
+      "feasible": true,
+      "checks": [
+        {
+          "name": "budget",
+          "passed": true,
+          "detail": "₹46,300 of ₹55,000"
+        },
+        {
+          "name": "hard_connection:it_a_t1->it_a_e1",
+          "passed": true,
+          "detail": "Cab ends 14:20, +20 min to gate, last entry 15:45: 65 min slack"
+        },
+        {
+          "name": "no_night_ghat",
+          "passed": true,
+          "detail": "Both ghat transfers end before 18:00"
+        }
+      ],
+      "min_slack_min": 65,
+      "budget_headroom_inr": 8700,
+      "feasibility": 0.92,
+      "solver": "fixture",
+      "solve_ms": 0
+    },
+    "summary": "Munnar for 2: tea estates, waterfalls and sunsets, within budget.",
+    "created_at": "2026-11-22T10:00:05+05:30",
+    "superseded": false
+  },
+  "dropped": [
+    {
+      "item_id": "it_a_mb",
+      "title": "Mattupetty Dam boating",
+      "priority": "NICE"
+    }
+  ],
+  "shortened": [
+    "it_a_tm"
+  ],
+  "summary": "Absorbed 75 min delay by shortening Tea Museum (15 min) and dropping Mattupetty Dam boating (NICE); all MUST items protected.",
+  "applied": false
+}

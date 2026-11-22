@@ -1,0 +1,13 @@
+{
+  "user_id": "usr_demo",
+  "channels": [
+    "IN_APP",
+    "WHATSAPP",
+    "EMAIL"
+  ],
+  "whatsapp_number": "+919800000000",
+  "quiet_hours_start": "22:00",
+  "quiet_hours_end": "07:00",
+  "sensitivity": "NORMAL",
+  "language": "en"
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "bk_1",
+    "trip_id": "trip_golden",
+    "plan_id": "plan_a1",
+    "item_id": "it_a_f1",
+    "status": "CONFIRMED",
+    "supplier_ref": "SIM-F-7721",
+    "amount_inr": 8600,
+    "refundable": false,
+    "failure_reason": null,
+    "penalty_inr": null,
+    "updated_at": "2026-11-22T10:05:00+05:30"
+  },
+  {
+    "id": "bk_2",
+    "trip_id": "trip_golden",
+    "plan_id": "plan_a1",
+    "item_id": "it_a_t1",
+    "status": "CONFIRMED",
+    "supplier_ref": "SIM-C-4102",
+    "amount_inr": 4300,
+    "refundable": true,
+    "failure_reason": null,
+    "penalty_inr": null,
+    "updated_at": "2026-11-22T10:05:00+05:30"
+  },
+  {
+    "id": "bk_3",
+    "trip_id": "trip_golden",
+    "plan_id": "plan_a1",
+    "item_id": "it_a_e1",
+    "status": "CONFIRMED",
+    "supplier_ref": "SIM-E-9012",
+    "amount_inr": 1000,
+    "refundable": false,
+    "failure_reason": null,
+    "penalty_inr": null,
+    "updated_at": "2026-11-22T10:05:00+05:30"
+  },
+  {
+    "id": "bk_4",
+    "trip_id": "trip_golden",
+    "plan_id": "plan_a1",
+    "item_id": "it_a_h1",
+    "status": "PENDING",
+    "supplier_ref": null,
+    "amount_inr": 16000,
+    "refundable": true,
+    "failure_reason": null,
+    "penalty_inr": null,
+    "updated_at": "2026-11-22T10:05:01+05:30"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "reason": "Charu (usr_g3) ETA gap exceeds 20 min (38 min behind group).",
+  "point": {
+    "name": "Mercara Coffee Estate, Coorg",
+    "lat": 12.408,
+    "lng": 75.722
+  },
+  "meet_by": "2026-12-13T10:15:00+05:30",
+  "member_etas_min": {
+    "usr_g1": 12,
+    "usr_g2": 15,
+    "usr_g3": 50
+  },
+  "affected_user_ids": [
+    "usr_g3"
+  ]
+}

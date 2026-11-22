@@ -1,0 +1,65 @@
+{
+  "trip_id": "trip_golden",
+  "as_of": "2026-12-05T13:05:00+05:30",
+  "location": {
+    "name": "NH85 Neriamangalam Ghat Corridor",
+    "lat": 10.0261,
+    "lng": 76.917
+  },
+  "tracking_on": true,
+  "next_commitment": {
+    "item_id": "it_a_e1",
+    "title": "Eravikulam NP timed entry",
+    "arrive_by": "2026-12-05T15:45:00+05:30",
+    "eta_min": 95,
+    "slack_min": -10,
+    "health": "RED"
+  },
+  "reroute_options": [
+    {
+      "id": "ro_1",
+      "mode": "SHIFT_SLOT",
+      "title": "Move Eravikulam to Day 2, 09:00",
+      "eta_min": null,
+      "slack_min": 720,
+      "delta_cost_inr": 400,
+      "note": "Rebooking fee ₹400; preserves Tea Museum at 14:00",
+      "provenance": {
+        "source": "TBO Sandbox (sim)",
+        "checked_at": "2026-11-22T10:00:00+05:30",
+        "is_simulated": true,
+        "confidence": 1.0
+      },
+      "action": {
+        "action": "SWITCH_PLAN",
+        "label": "Switch",
+        "params": {
+          "recommendation_id": "sw_2"
+        }
+      }
+    },
+    {
+      "id": "ro_2",
+      "mode": "USE_PLAN_B_SEGMENT",
+      "title": "Switch to Plan B Day 1–2 recovery segment",
+      "eta_min": 75,
+      "slack_min": 70,
+      "delta_cost_inr": 1800,
+      "note": "Uses Plan B Day 2 morning Eravikulam slot",
+      "provenance": {
+        "source": "Traffic feed (sim)",
+        "checked_at": "2026-12-05T13:05:00+05:30",
+        "is_simulated": true,
+        "confidence": 0.9
+      },
+      "action": {
+        "action": "SWITCH_PLAN",
+        "label": "Review switch",
+        "params": {
+          "recommendation_id": "sw_2"
+        }
+      }
+    }
+  ],
+  "geofence_prompt": null
+}
